@@ -55,7 +55,7 @@ class GenerateSuggestion:
             {"model": response.model, "prompt_version": PROMPT_VERSION},
         )
 
-        parsed = _parse(response.text)
+        parsed = parse_model_json(response.text)
         if parsed is None:
             self._audit.append(event.id, "CITATIONS_VALIDATED", {"format_error": True})
             return self._refuse(
@@ -111,7 +111,7 @@ class GenerateSuggestion:
         return suggestion
 
 
-def _parse(text: str) -> dict[str, Any] | None:
+def parse_model_json(text: str) -> dict[str, Any] | None:
     body = text.strip()
     fenced = _FENCE.match(body)
     if fenced:

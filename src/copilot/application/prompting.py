@@ -7,7 +7,7 @@ from copilot.domain.models import Event
 from copilot.domain.procedures import RetrievedChunk
 
 PROMPT_VERSION = "v1"
-_DIR = Path(__file__).parent / "prompts"
+PROMPTS_DIR = Path(__file__).parent / "prompts"
 
 
 def build_search_query(event: Event) -> str:
@@ -21,7 +21,7 @@ def build_search_query(event: Event) -> str:
 
 def render_prompt(event: Event, chunks: Sequence[RetrievedChunk]) -> tuple[str, str]:
     """Returns (system, user)."""
-    system = (_DIR / f"{PROMPT_VERSION}.system.md").read_text(encoding="utf-8")
+    system = (PROMPTS_DIR / f"{PROMPT_VERSION}.system.md").read_text(encoding="utf-8")
     event_json = json.dumps(
         {
             "tipo": event.type,
@@ -37,7 +37,7 @@ def render_prompt(event: Event, chunks: Sequence[RetrievedChunk]) -> tuple[str, 
         f"{c.text}"
         for c in chunks
     )
-    user = Template((_DIR / f"{PROMPT_VERSION}.user.md").read_text(encoding="utf-8")).substitute(
-        event=event_json, chunks=rendered_chunks
-    )
+    user = Template(
+        (PROMPTS_DIR / f"{PROMPT_VERSION}.user.md").read_text(encoding="utf-8")
+    ).substitute(event=event_json, chunks=rendered_chunks)
     return system, user

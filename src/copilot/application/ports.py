@@ -38,6 +38,10 @@ class RetrieverPort(Protocol):
 class LLMResponse:
     text: str
     model: str
+    prompt_tokens: int | None = None
+    completion_tokens: int | None = None
+    cost_usd: float | None = None
+    latency_s: float | None = None
 
 
 class LLMPort(Protocol):
@@ -82,3 +86,18 @@ class SuggestionRepository(Protocol):
         decided_by: str,
         new_status: str,
     ) -> None: ...
+
+
+@dataclass(frozen=True)
+class CatalogEntry:
+    code: str
+    version: str
+    title: str
+
+
+class CatalogPort(Protocol):
+    """Whole-base access, used only by the no-retrieval evaluation baseline."""
+
+    def valid_procedures(self) -> list[CatalogEntry]: ...
+
+    def chunks_of(self, procedure_code: str) -> list[RetrievedChunk]: ...

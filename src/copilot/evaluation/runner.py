@@ -1,15 +1,17 @@
-"""Runs scenarios through the real use case and calibrates the refusal threshold."""
+"""Runs scenarios through the real use cases and calibrates the refusal threshold."""
 
 import json
 import time
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
+from dataclasses import replace
 from pathlib import Path
 
 from copilot.adapters.outbound.fakes.audit import InMemoryAudit
-from copilot.application.ports import LLMPort, RetrieverPort
+from copilot.application.ports import CatalogPort, LLMPort, LLMResponse, RetrieverPort
 from copilot.application.use_cases.generate_suggestion import GenerateSuggestion
+from copilot.application.use_cases.generate_without_retrieval import GenerateWithoutRetrieval
 from copilot.domain import models
-from copilot.domain.models import Event
+from copilot.domain.models import Event, Suggestion
 from copilot.domain.procedures import RetrievedChunk
 from copilot.evaluation.metrics import ScenarioResult
 from copilot.evaluation.scenarios import Scenario
@@ -25,6 +27,17 @@ class _RecordingRetriever:
         return self.last
 
 
+class _RecordingLLM:
+    def __init__(self, inner: LLMPort) -> None:
+        self._inner = inner
+        self.responses: list[LLMResponse] = []
+
+    def complete(self, system: str, user: str) -> LLMResponse:
+        response = self._inner.complete(system, user)
+        self.responses.append(response)
+        return response
+
+
 def event_of(s: Scenario) -> Event:
     return Event(
         id=s.id,
@@ -36,19 +49,18 @@ def event_of(s: Scenario) -> Event:
     )
 
 
-def run_scenario(
-    s: Scenario, retriever: RetrieverPort, llm: LLMPort, *, k: int, min_score: float
+def _result(
+    s: Scenario,
+    suggestion: Suggestion,
+    audit: InMemoryAudit,
+    llm: _RecordingLLM,
+    chunks: list[RetrievedChunk],
+    *,
+    retrieval_used: bool,
+    latency: float,
 ) -> ScenarioResult:
-    recorder = _RecordingRetriever(retriever)
-    audit = InMemoryAudit()
-    started = time.perf_counter()
-    suggestion = GenerateSuggestion(recorder, llm, audit, k=k, min_score=min_score).execute(
-        event_of(s)
-    )
-    latency = time.perf_counter() - started
-
     validated = next((p for _, kind, p in audit.entries if kind == "CITATIONS_VALIDATED"), {})
-    chunks = recorder.last
+    responses = llm.responses
     return ScenarioResult(
         scenario_id=s.id,
         category=s.category,
@@ -67,19 +79,53 @@ def run_scenario(
             for st in suggestion.steps
         ),
         forbidden_steps=s.forbidden_steps,
-        latency_s=latency,
+        # Latency of the model call when known (cached runs keep the original), else wall time.
+        latency_s=sum(r.latency_s or 0.0 for r in responses) or latency,
+        retrieval_used=retrieval_used,
+        prompt_tokens=sum(r.prompt_tokens or 0 for r in responses),
+        completion_tokens=sum(r.completion_tokens or 0 for r in responses),
+        cost_usd=sum(r.cost_usd or 0.0 for r in responses),
+        llm_called=bool(responses),
     )
+
+
+def run_scenario(
+    s: Scenario, retriever: RetrieverPort, llm: LLMPort, *, k: int, min_score: float
+) -> ScenarioResult:
+    recorder = _RecordingRetriever(retriever)
+    recording_llm = _RecordingLLM(llm)
+    audit = InMemoryAudit()
+    started = time.perf_counter()
+    suggestion = GenerateSuggestion(
+        recorder, recording_llm, audit, k=k, min_score=min_score
+    ).execute(event_of(s))
+    latency = time.perf_counter() - started
+    return _result(
+        s, suggestion, audit, recording_llm, recorder.last, retrieval_used=True, latency=latency
+    )
+
+
+def run_scenario_without_retrieval(
+    s: Scenario, catalog: CatalogPort, llm: LLMPort
+) -> ScenarioResult:
+    recording_llm = _RecordingLLM(llm)
+    audit = InMemoryAudit()
+    started = time.perf_counter()
+    suggestion = GenerateWithoutRetrieval(catalog, recording_llm, audit).execute(event_of(s))
+    latency = time.perf_counter() - started
+    return _result(s, suggestion, audit, recording_llm, [], retrieval_used=False, latency=latency)
 
 
 def run_all(
     scenarios: Sequence[Scenario],
-    retriever: RetrieverPort,
-    llm: LLMPort,
+    run_one: Callable[[Scenario, int], ScenarioResult],
     *,
-    k: int,
-    min_score: float,
+    repetitions: int = 1,
 ) -> list[ScenarioResult]:
-    return [run_scenario(s, retriever, llm, k=k, min_score=min_score) for s in scenarios]
+    """`run_one(scenario, repetition)`; every result is tagged with its repetition index."""
+    return [
+        replace(run_one(s, rep), repetition=rep) for rep in range(repetitions) for s in scenarios
+    ]
 
 
 def calibrate_threshold(results: Sequence[ScenarioResult]) -> tuple[float, float]:

@@ -66,6 +66,7 @@ class OpenRouterLLM:
         raise last
 
     def _once(self, body: dict[str, object]) -> LLMResponse:
+        started = time.perf_counter()
         try:
             response = self._client.post(self._url, headers=self._headers, json=body)
         except httpx.HTTPError as exc:
@@ -75,13 +76,31 @@ class OpenRouterLLM:
         if response.status_code != 200:
             raise LLMCallError(f"{self._model}: HTTP {response.status_code}")
         try:
-            text = response.json()["choices"][0]["message"]["content"]
+            payload = response.json()
+            text = payload["choices"][0]["message"]["content"]
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             raise LLMCallError(f"{self._model}: unexpected response shape") from exc
         if not isinstance(text, str):
             raise LLMCallError(f"{self._model}: empty or non-text content")
-        return LLMResponse(text=text, model=self._model)
+        usage = payload.get("usage") if isinstance(payload, dict) else None
+        usage = usage if isinstance(usage, dict) else {}
+        return LLMResponse(
+            text=text,
+            model=self._model,
+            prompt_tokens=_int(usage.get("prompt_tokens")),
+            completion_tokens=_int(usage.get("completion_tokens")),
+            cost_usd=_float(usage.get("cost")),
+            latency_s=time.perf_counter() - started,
+        )
 
 
 class _Retryable(Exception):
     pass
+
+
+def _int(value: object) -> int | None:
+    return value if isinstance(value, int) and not isinstance(value, bool) else None
+
+
+def _float(value: object) -> float | None:
+    return float(value) if isinstance(value, int | float) and not isinstance(value, bool) else None

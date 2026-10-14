@@ -24,16 +24,22 @@ class ScenarioResult:
     accepted_steps: tuple[tuple[str, tuple[str, ...]], ...]  # (instruction, cited procedure codes)
     forbidden_steps: tuple[str, ...]
     latency_s: float = 0.0
+    retrieval_used: bool = True
+    repetition: int = 0
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    cost_usd: float = 0.0
+    llm_called: bool = False
 
 
 def recall_at_k(r: ScenarioResult) -> float | None:
-    if r.expected_refusal:
+    if r.expected_refusal or not r.retrieval_used:
         return None
     return float(any(code in r.expected_procedures for code in r.retrieved_procedures))
 
 
 def reciprocal_rank(r: ScenarioResult) -> float | None:
-    if r.expected_refusal:
+    if r.expected_refusal or not r.retrieval_used:
         return None
     for position, code in enumerate(r.retrieved_procedures, start=1):
         if code in r.expected_procedures:
@@ -95,13 +101,18 @@ def bootstrap_ci(
     resamples: int = 1000,
     seed: int = 0,
 ) -> tuple[float, float] | None:
-    """95% percentile bootstrap over scenarios. None when the statistic is undefined."""
+    """95% percentile bootstrap, resampling scenarios (all repetitions of a scenario travel
+    together, since they are not independent). None when the statistic is undefined."""
     if not results:
         return None
+    groups: dict[str, list[ScenarioResult]] = {}
+    for r in results:
+        groups.setdefault(r.scenario_id, []).append(r)
+    clusters = list(groups.values())
     rng = random.Random(seed)
     stats: list[float] = []
     for _ in range(resamples):
-        sample = [results[rng.randrange(len(results))] for _ in results]
+        sample = [r for _ in clusters for r in clusters[rng.randrange(len(clusters))]]
         value = statistic(sample)
         if value is not None:
             stats.append(value)

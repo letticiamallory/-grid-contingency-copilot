@@ -18,3 +18,4 @@ eval/.cache/
 
 # pipeline-only (echo LLM) reports are not results
 eval/reports/*-echo-*
+eval/cache/

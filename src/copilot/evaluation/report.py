@@ -43,9 +43,27 @@ STATISTICS: dict[str, Statistic] = {
 
 def summarize(results: Sequence[ScenarioResult]) -> dict[str, Any]:
     """Each metric: value, 95% bootstrap CI, and N of the unit of analysis' scenarios."""
-    out: dict[str, Any] = {"n_scenarios": len(results)}
+    repetitions = sorted({r.repetition for r in results})
+    out: dict[str, Any] = {
+        "n_scenarios": len({r.scenario_id for r in results}),
+        "n_repetitions": len(repetitions),
+    }
     for name, statistic in STATISTICS.items():
-        out[name] = {"value": statistic(results), "ci95": m.bootstrap_ci(results, statistic)}
+        per_rep = [
+            v
+            for rep in repetitions
+            if (v := statistic([r for r in results if r.repetition == rep])) is not None
+        ]
+        out[name] = {
+            "value": statistic(results),
+            "ci95": m.bootstrap_ci(results, statistic),
+            "sd_across_repetitions": statistics.pstdev(per_rep) if len(per_rep) > 1 else None,
+        }
+    runs = len(results) or 1
+    out["cost_usd_per_scenario"] = sum(r.cost_usd for r in results) / runs
+    out["cost_usd_total"] = sum(r.cost_usd for r in results)
+    out["tokens_per_scenario"] = sum(r.prompt_tokens + r.completion_tokens for r in results) / runs
+    out["llm_calls"] = sum(r.llm_called for r in results)
     latencies = sorted(r.latency_s for r in results)
     out["latency_p50_s"] = statistics.median(latencies) if latencies else None
     out["latency_p95_s"] = latencies[int(0.95 * (len(latencies) - 1))] if latencies else None
@@ -68,10 +86,11 @@ def by_category(results: Sequence[ScenarioResult]) -> dict[str, dict[str, Any]]:
 
 
 def _cell(metric: dict[str, Any]) -> str:
-    value, ci = metric["value"], metric["ci95"]
+    value, ci, sd = metric["value"], metric["ci95"], metric.get("sd_across_repetitions")
     if value is None:
         return "n/a"
-    return f"{value:.2f} [{ci[0]:.2f}, {ci[1]:.2f}]" if ci else f"{value:.2f}"
+    text = f"{value:.2f} [{ci[0]:.2f}, {ci[1]:.2f}]" if ci else f"{value:.2f}"
+    return f"{text}, dp entre repeticoes {sd:.2f}" if sd is not None else text
 
 
 def _fmt(value: float | None) -> str:
@@ -103,6 +122,9 @@ def render_markdown(
     lines += [
         f"| Latencia p50 / p95 (s) | {_fmt(summary['latency_p50_s'])} / "
         f"{_fmt(summary['latency_p95_s'])} |",
+        f"| Custo por cenario / total (US$) | {summary['cost_usd_per_scenario']:.5f} / "
+        f"{summary['cost_usd_total']:.4f} |",
+        f"| Tokens por cenario | {summary['tokens_per_scenario']:.0f} |",
         "",
         "## Por categoria",
         "",
