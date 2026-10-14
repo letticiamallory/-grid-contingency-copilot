@@ -39,52 +39,28 @@
   :focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
   [hidden] { display: none !important; }
 
-  .app { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh; }
-  @media (max-width: 900px) { .app { grid-template-columns: minmax(0, 1fr); } }
-
-  /* barra lateral */
-  .rail { background: var(--fundo-sutil); border-right: 1px solid var(--borda); padding: 28px 20px;
-    display: flex; flex-direction: column; gap: 28px; position: sticky; top: 0; height: 100vh; }
-  @media (max-width: 900px) { .rail { position: static; height: auto; border-right: 0;
-    border-bottom: 1px solid var(--borda); padding: 18px 20px; gap: 16px; } }
-  .wordmark { font-family: var(--serif); font-size: 30px; line-height: 32px; letter-spacing: -.4px;
-    margin: 0; }
-  .wordmark::after { content: ""; display: block; width: 28px; height: 2px; background: var(--cobre);
-    margin-top: 12px; }
-  .tagline { margin: 10px 0 0; color: var(--texto-2); font-size: 13px; line-height: 20px; }
-  .nav { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-  @media (max-width: 900px) { .nav { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-  .nav li { border-radius: 6px; color: var(--texto-2); font-weight: 500; }
-  .navbtn { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 10px;
-    padding: 8px 10px; border-radius: 6px; cursor: pointer; }
-  .navbtn:hover:not(:disabled) { background: var(--fundo-base); }
-  .navbtn:disabled { cursor: default; opacity: .6; }
-  .navbtn:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
-  .nav li .mk { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--borda-campo);
-    display: grid; place-items: center; }
-  .card, h2 { scroll-margin-top: 16px; }
-  .nav li.on { background: var(--fundo-superficie); color: var(--texto); box-shadow: inset 0 0 0 1px var(--borda); }
-  .nav li.on .mk { border-color: var(--marca); background: var(--marca); }
-  .nav li.on .mk::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #fff; }
-  .nav li.done { color: var(--texto); }
-  .nav li.done .mk { border-color: var(--ok); background: var(--ok); color: #fff; }
-  .nav .sr { position: absolute; left: -9999px; }
-  @media (max-width: 900px) { .navbtn { padding: 6px 4px; font-size: 12px; flex-direction: column; gap: 4px; text-align: center; } }
-  .rail-foot { margin-top: auto; display: grid; gap: 8px; font-size: 13px; color: var(--texto-2); }
-  @media (max-width: 900px) { .rail-foot { display: none; } }
-  .rail-foot a { color: var(--marca); text-underline-offset: 3px; }
+  /* topo */
+  .top { border-bottom: 1px solid var(--borda); background: var(--fundo-sutil); }
+  .top-in { max-width: 1240px; margin: 0 auto; padding: 18px 36px; display: flex; align-items: center; gap: 20px;
+    flex-wrap: wrap; }
+  @media (max-width: 700px) { .top-in { padding: 16px; } }
+  .wordmark { font-family: var(--serif); font-size: 28px; line-height: 30px; letter-spacing: -.4px; margin: 0; }
+  .wordmark::after { content: ""; display: block; width: 28px; height: 2px; background: var(--cobre); margin-top: 8px; }
+  .tagline { margin: 0; color: var(--texto-2); font-size: 13px; line-height: 20px; max-width: 46ch; }
+  .spacer { flex: 1; }
+  .top-links { display: flex; align-items: center; gap: 18px; font-size: 13px; color: var(--texto-2); }
+  .top-links a { color: var(--marca); text-underline-offset: 3px; }
   .live { display: flex; align-items: center; gap: 8px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--borda-campo); }
   .dot.up { background: #2f7d4f; } .dot.down { background: #b23a3a; }
 
   /* conteúdo */
-  .page { padding: 32px 36px 56px; max-width: 1120px; }
+  .page { padding: 32px 36px 56px; max-width: 1240px; margin: 0 auto; }
   @media (max-width: 700px) { .page { padding: 24px 16px 40px; } }
   h1 { margin: 0; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -.2px; }
   .lead { margin: 4px 0 24px; color: var(--texto-2); }
-  .grid { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 24px; align-items: start; }
-  @media (max-width: 1000px) { .grid { grid-template-columns: minmax(0, 1fr); } }
   .stack { display: grid; gap: 24px; min-width: 0; }
+  .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 24px; align-items: start; }
   .card { background: var(--fundo-superficie); border: 1px solid var(--borda); border-radius: 8px; padding: 24px;
     min-width: 0; overflow-wrap: anywhere; }
   h2 { margin: 0; font-size: 18px; line-height: 26px; font-weight: 600; }
@@ -102,6 +78,9 @@
   input:hover, textarea:hover { border-color: var(--texto-2); }
   textarea { min-height: 96px; resize: vertical; }
   textarea.mono { font-family: var(--mono); font-size: 13px; line-height: 20px; }
+  .frow { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 16px; }
+  .frow > * { grid-column: span 12; }
+  @media (min-width: 900px) { .c4 { grid-column: span 4 !important; } .c8 { grid-column: span 8 !important; } }
   .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
   @media (max-width: 460px) { .two { grid-template-columns: minmax(0, 1fr); } }
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 16px; min-height: 38px;
@@ -114,7 +93,9 @@
   .btn.primary:hover { background: var(--marca-hover); }
   .btn.danger { border-color: var(--erro); color: var(--erro); }
   .btn.danger:hover { background: var(--erro-soft); }
-  .btn.block { width: 100%; margin-top: 20px; }
+  .btn.block { margin-top: 20px; }
+  .actions { display: flex; align-items: center; gap: 16px; margin-top: 20px; flex-wrap: wrap; }
+  .actions .btn.block { margin-top: 0; min-width: 260px; }
   .spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid currentColor; border-top-color: transparent;
     animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -137,8 +118,11 @@
   .step:first-child { border-top: 0; padding-top: 4px; }
   .tag-ai { display: inline-block; margin-left: 8px; padding: 0 7px; border-radius: 4px; background: var(--ai-soft);
     color: var(--ai); font-size: 11px; line-height: 18px; font-weight: 500; letter-spacing: .3px; text-transform: none; }
-  .instr { margin: 6px 0 12px; font-size: 16px; line-height: 24px; font-weight: 500; max-width: 72ch; }
-  .src { margin-top: 10px; }
+  .step-body { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 8px 32px; align-items: start; }
+  @media (max-width: 900px) { .step-body { grid-template-columns: minmax(0, 1fr); } }
+  .instr { margin: 6px 0 0; font-size: 16px; line-height: 24px; font-weight: 500; max-width: 72ch; }
+  .src { margin-top: 0; }
+  .src + .src { margin-top: 12px; }
   .src-label { margin-bottom: 6px; }
   blockquote { margin: 0; padding: 10px 14px; background: var(--fundo-base); border-left: 2px solid var(--marca);
     border-radius: 0 6px 6px 0; max-width: 72ch; }
@@ -172,75 +156,65 @@
 </style>
 </head>
 <body>
-<div class="app">
-  <aside class="rail">
-    <div>
-      <p class="wordmark">Grid Contingency Copilot</p>
-      <p class="tagline">Passos de resposta a eventos de rede, com a fonte de cada passo.</p>
-    </div>
-    <ol class="nav" id="nav" aria-label="Etapas">
-      <li data-s="1" class="on"><button type="button" class="navbtn" data-t="c-event"><span class="mk" aria-hidden="true"></span>Evento</button></li>
-      <li data-s="2"><button type="button" class="navbtn" data-t="c-result"><span class="mk" aria-hidden="true"></span>Sugestão</button></li>
-      <li data-s="3"><button type="button" class="navbtn" data-t="decision"><span class="mk" aria-hidden="true"></span>Decisão</button></li>
-      <li data-s="4"><button type="button" class="navbtn" data-t="auditBox"><span class="mk" aria-hidden="true"></span>Auditoria</button></li>
-    </ol>
-    <div class="rail-foot">
-      <div class="live"><span class="dot" id="hdot"></span><span id="htxt">verificando a API</span></div>
+<header class="top">
+  <div class="top-in">
+    <p class="wordmark">Grid Contingency Copilot</p>
+    <p class="tagline">Passos de resposta a eventos de rede, com a fonte de cada passo.</p>
+    <span class="spacer"></span>
+    <div class="top-links">
+      <span class="live"><span class="dot" id="hdot"></span><span id="htxt">verificando a API</span></span>
       <a href="/docs">Documentação da API</a>
     </div>
-  </aside>
+  </div>
+</header>
 
   <main class="page">
     <h1>Nova ocorrência</h1>
-    <p class="lead">Registre o evento. O copiloto sugere passos só a partir dos procedimentos e mostra o trecho de cada um.</p>
+    <p class="lead">Registre o evento. O copiloto sugere passos só a partir dos procedimentos e mostra o trecho que sustenta cada um.</p>
 
-    <div class="grid">
-      <div class="stack">
-        <section class="card" id="c-event" aria-labelledby="h-event">
-          <h2 id="h-event" tabindex="-1">Evento</h2>
-          <div class="ex" id="examples" role="group" aria-label="Exemplos de evento"></div>
-          <form id="form" autocomplete="off">
-            <label for="type">Tipo</label>
-            <input id="type" list="types" required>
-            <datalist id="types">
-              <option value="line_trip_by_protection"><option value="line_reclosing_failed">
-              <option value="transformer_differential_trip"><option value="transformer_overload">
-              <option value="busbar_loss"><option value="undervoltage"><option value="overvoltage">
-              <option value="substation_comm_loss"><option value="breaker_failure_protection">
-              <option value="frequency_deviation">
-            </datalist>
-            <label for="element">Elemento</label>
-            <input id="element" required>
-            <label for="when">Ocorrido em</label>
-            <input id="when" type="datetime-local" required>
-            <label for="attrs">Atributos (JSON)</label>
-            <textarea id="attrs" class="mono" spellcheck="false">{}</textarea>
-            <label for="by">Registrado por</label>
-            <input id="by" required value="operador.teste">
-            <button class="btn primary block" id="go" type="submit">Registrar e gerar sugestão</button>
-          </form>
-          <div id="formMsg"></div>
-        </section>
-      </div>
-
-      <div class="stack">
-        <section class="card" id="c-result" aria-labelledby="h-result" aria-live="polite">
-          <div class="head"><h2 id="h-result" tabindex="-1">Sugestão</h2><span id="state"></span></div>
-          <div id="result">
-            <div class="empty">
-              <p>Nenhuma sugestão ainda. Escolha um exemplo ou preencha o evento e clique em
-                 <b>Registrar e gerar sugestão</b>.</p>
-              <p>Se nenhum procedimento se aplicar, o copiloto recusa e diz o motivo.</p>
-            </div>
+    <div class="stack">
+      <section class="card" id="c-event" aria-labelledby="h-event">
+        <h2 id="h-event" tabindex="-1">Evento</h2>
+        <div class="ex" id="examples" role="group" aria-label="Exemplos de evento"></div>
+        <form id="form" autocomplete="off">
+          <div class="frow">
+            <div class="c4"><label for="type">Tipo</label><input id="type" list="types" required></div>
+            <div class="c4"><label for="element">Elemento</label><input id="element" required></div>
+            <div class="c4"><label for="when">Ocorrido em</label><input id="when" type="datetime-local" required></div>
+            <div class="c8"><label for="attrs">Atributos (JSON)</label><textarea id="attrs" class="mono" spellcheck="false">{}</textarea></div>
+            <div class="c4"><label for="by">Registrado por</label><input id="by" required value="operador.teste"></div>
           </div>
-        </section>
+          <datalist id="types">
+            <option value="line_trip_by_protection"><option value="line_reclosing_failed">
+            <option value="transformer_differential_trip"><option value="transformer_overload">
+            <option value="busbar_loss"><option value="undervoltage"><option value="overvoltage">
+            <option value="substation_comm_loss"><option value="breaker_failure_protection">
+            <option value="frequency_deviation">
+          </datalist>
+          <div class="actions">
+            <button class="btn primary block" id="go" type="submit">Registrar e gerar sugestão</button>
+            <span class="hint" style="margin:0">Se nenhum procedimento se aplicar, o copiloto recusa e diz o motivo.</span>
+          </div>
+        </form>
+        <div id="formMsg"></div>
+      </section>
 
+      <section class="card" id="c-result" aria-labelledby="h-result" aria-live="polite">
+        <div class="head"><h2 id="h-result" tabindex="-1">Sugestão</h2><span id="state"></span></div>
+        <div id="result">
+          <div class="empty">
+            <p>Nenhuma sugestão ainda. Escolha um exemplo ou preencha o evento e clique em
+               <b>Registrar e gerar sugestão</b>.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="pair">
         <section class="card" id="decision" hidden aria-labelledby="h-dec">
           <h2 id="h-dec" tabindex="-1">Decisão do operador</h2>
           <p class="sub">Nada é aprovado sem uma decisão humana.</p>
-          <div class="two">
-            <div><label for="decidedBy" style="margin-top:0">Decidido por</label><input id="decidedBy" value="operador.teste"></div>
-          </div>
+          <label for="decidedBy" style="margin-top:0">Decidido por</label>
+          <input id="decidedBy" value="operador.teste">
           <label for="just">Justificativa (obrigatória para rejeitar)</label>
           <textarea id="just"></textarea>
           <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
@@ -259,7 +233,6 @@
       </div>
     </div>
   </main>
-</div>
 
 <script>
 "use strict";
@@ -344,36 +317,6 @@ async function api(method, path, body) {
   return data;
 }
 
-const TARGETS = {1: "c-event", 2: "c-result", 3: "decision", 4: "auditBox"};
-function stage(active, done = []) {
-  for (const li of $("nav").children) {
-    const n = Number(li.dataset.s);
-    li.className = done.includes(n) ? "done" : (n === active ? "on" : "");
-    const btn = li.firstElementChild;
-    clear(btn.firstElementChild, ...(done.includes(n) ? [icon("check", 11)] : []));
-    btn.querySelector(".sr")?.remove();
-    if (done.includes(n)) btn.append(el("span", {class: "sr"}, " (concluída)"));
-    if (n === active) btn.setAttribute("aria-current", "step"); else btn.removeAttribute("aria-current");
-  }
-  syncNav();
-}
-// A step is reachable once its card exists (the first two always do). Call again whenever a
-// card is shown or hidden after stage(), e.g. when the audit trail finishes loading.
-function syncNav() {
-  for (const btn of document.querySelectorAll(".navbtn")) {
-    const n = Number(btn.parentElement.dataset.s);
-    btn.disabled = n >= 3 && $(TARGETS[n]).hidden;
-    btn.title = btn.disabled ? "Disponível depois de gerar a sugestão" : "";
-  }
-}
-for (const btn of document.querySelectorAll(".navbtn")) {
-  btn.addEventListener("click", () => {
-    const card = $(btn.dataset.t);
-    card.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
-    card.querySelector("h2")?.focus({preventScroll: true});
-  });
-}
-
 let current = null; // {eventId, suggestionId}
 
 function renderSuggestion(s) {
@@ -386,11 +329,12 @@ function renderSuggestion(s) {
   if (s.steps.length) {
     const list = el("ol", {class: "steps"});
     for (const st of s.steps) {
-      const item = el("li", {class: "step"},
+      const left = el("div", {},
         el("div", {class: "caps"}, "Passo " + st.position, el("span", {class: "tag-ai"}, "redigido pelo modelo")),
         el("p", {class: "instr"}, st.instruction));
+      const right = el("div", {});
       for (const c of st.citations) {
-        item.append(el("div", {class: "src"},
+        right.append(el("div", {class: "src"},
           el("div", {class: "caps src-label"}, "Fonte no procedimento"),
           el("blockquote", {}, c.quote),
           el("div", {class: "foot"},
@@ -398,7 +342,7 @@ function renderSuggestion(s) {
             el("span", {}, c.section),
             el("span", {class: "check"}, icon("check", 14), "trecho conferido por código"))));
       }
-      list.append(item);
+      list.append(el("li", {class: "step"}, el("div", {class: "step-body"}, left, right)));
     }
     parts.push(list);
   }
@@ -419,7 +363,6 @@ async function renderAudit(eventId) {
       el("div", {class: "h"}, "hash " + e.hash.slice(0, 12)),
       el("details", {}, el("summary", {}, "Ver detalhes"),
         el("pre", {}, JSON.stringify(e.payload, null, 2)))))));
-  syncNav();
 }
 
 $("form").addEventListener("submit", async (ev) => {
@@ -434,7 +377,6 @@ $("form").addEventListener("submit", async (ev) => {
   const go = $("go");
   go.disabled = true; clear(go, el("span", {class: "spin"}), "Gerando sugestão…");
   $("decision").hidden = true; $("auditBox").hidden = true; clear($("state"));
-  stage(2, [1]);
   try {
     const event = await api("POST", "/events", {
       type: $("type").value.trim(), element: $("element").value.trim(),
@@ -445,17 +387,15 @@ $("form").addEventListener("submit", async (ev) => {
     try {
       const s = await api("POST", "/events/" + event.id + "/suggestions");
       current.suggestionId = s.id; renderSuggestion(s);
-      stage(s.status === "pending_review" ? 3 : 4, s.status === "pending_review" ? [1, 2] : [1, 2, 3]);
     } catch (e) {
       clear($("state"), badge("bad", "Sem sugestão", "x"));
       clear($("result"), el("p", {class: "sub"}, "O evento foi registrado, mas não foi criada sugestão."),
         el("div", {class: "notice err", role: "alert"}, e.message));
-      stage(2, [1]);
     }
     await renderAudit(event.id);
   } catch (e) {
     clear($("result"), el("div", {class: "empty"}, el("p", {}, "Nada foi registrado.")));
-    notice($("formMsg"), e.message); stage(1);
+    notice($("formMsg"), e.message);
   } finally { go.disabled = false; clear(go, "Registrar e gerar sugestão"); }
 });
 
@@ -468,7 +408,7 @@ async function decide(outcome) {
       outcome, decided_by: $("decidedBy").value.trim(),
       ...(justification ? {justification} : {}),
     });
-    renderSuggestion(s); stage(4, [1, 2, 3]); await renderAudit(current.eventId);
+    renderSuggestion(s); await renderAudit(current.eventId);
   } catch (e) { notice($("decMsg"), e.message); }
 }
 $("approve").addEventListener("click", () => decide("approve"));
@@ -479,7 +419,6 @@ function localNow() {
   return d.toISOString().slice(0, 16);
 }
 $("when").value = localNow();
-stage(1);
 for (const [label, type, element, attrs] of EXAMPLES) {
   const b = el("button", {type: "button", class: "btn sm"}, label);
   b.addEventListener("click", () => {
