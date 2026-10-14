@@ -14,6 +14,7 @@
     refusal: false
     procedures:
     - PO-FICT-001
+    - PO-FICT-002
     required_topics: []
     forbidden_steps:
     - desligar toda a subestacao

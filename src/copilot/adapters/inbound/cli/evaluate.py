@@ -156,7 +156,7 @@ def main(argv: list[str] | None = None) -> int:
     tag = f"rag-{args.retrieval}" if args.mode == "rag" else "norag"
     title = f"Avaliacao {meta['data']} ({args.llm}, {tag}, {args.split})"
     args.reports_dir.mkdir(parents=True, exist_ok=True)
-    safe_llm = args.llm.replace(":", "_").replace("/", "_")
+    safe_llm = args.llm.replace(":", "_").replace("/", "_").replace(".", "-")
     stem = args.reports_dir / f"{meta['data']}-{safe_llm}-{tag}-{args.split}"
     stem.with_suffix(".md").write_text(
         report.render_markdown(title, meta, summary, categories), encoding="utf-8"

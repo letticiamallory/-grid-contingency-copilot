@@ -104,7 +104,8 @@ def render_markdown(
     lines += [f"- {key}: {value}" for key, value in meta.items()]
     lines += [
         "",
-        f"N de cenarios: {summary['n_scenarios']}. Celulas: valor [IC 95% bootstrap].",
+        f"N de cenarios: {summary['n_scenarios']}; repeticoes: {summary['n_repetitions']}; "
+        f"chamadas ao LLM: {summary['llm_calls']}. Celulas: valor [IC 95% bootstrap por cenario].",
         "",
     ]
     lines += ["| Metrica | Resultado |", "|---|---|"]

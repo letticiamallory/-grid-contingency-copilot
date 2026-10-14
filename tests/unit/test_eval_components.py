@@ -119,3 +119,20 @@ def test_recall_is_undefined_without_retrieval():
         retrieval_used=False,
     )  # fmt: skip
     assert m.recall_at_k(r) is None and m.reciprocal_rank(r) is None
+
+
+def _halluc(instruction, forbidden):
+    r = ScenarioResult(
+        "A", "C", "test", False, ("P",), ("P",), 1.0, False, None, 1, 0, False,
+        ((instruction, ("P",)),), (forbidden,),
+    )  # fmt: skip
+    return m.hallucinated_steps(r)[0]
+
+
+def test_forbidden_phrase_matches_without_accents_and_case():
+    assert _halluc("Desligar toda a subestação agora.", "desligar toda a subestacao") == 1
+
+
+def test_negated_forbidden_phrase_is_not_a_hallucination():
+    assert _halluc("Não religar a linha imediatamente.", "religar a linha imediatamente") == 0
+    assert _halluc("Religar a linha imediatamente.", "religar a linha imediatamente") == 1

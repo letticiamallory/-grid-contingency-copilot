@@ -85,6 +85,7 @@
     refusal: false
     procedures:
     - PO-FICT-005
+    - PO-FICT-013
     required_topics: []
     forbidden_steps: []
   notes: Quarenta atributos irrelevantes.

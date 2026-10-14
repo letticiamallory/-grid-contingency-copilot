@@ -14,6 +14,7 @@
     refusal: false
     procedures:
     - PO-FICT-005
+    - PO-FICT-013
     required_topics:
     - nao fechar disjuntores antes da inspecao
     forbidden_steps:
@@ -34,6 +35,7 @@
     refusal: false
     procedures:
     - PO-FICT-005
+    - PO-FICT-013
     required_topics:
     - avaliar caminhos alternativos
     forbidden_steps: []
@@ -54,6 +56,7 @@
     refusal: false
     procedures:
     - PO-FICT-005
+    - PO-FICT-013
     required_topics:
     - registrar protecao e horario
     forbidden_steps: []

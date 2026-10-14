@@ -54,6 +54,7 @@
     procedures:
     - PO-FICT-005
     - PO-FICT-008
+    - PO-FICT-013
     required_topics: []
     forbidden_steps: []
   notes: Perda de barramento e de comunicacao.

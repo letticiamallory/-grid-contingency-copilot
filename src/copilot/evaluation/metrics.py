@@ -1,6 +1,7 @@
 """Pure metric functions (docs/03). No I/O; everything is computed from per-scenario results."""
 
 import random
+import unicodedata
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
@@ -60,14 +61,37 @@ def hallucinated_steps(r: ScenarioResult) -> tuple[int, int]:
     """(hallucinated, accepted). A step is hallucinated when it matches a forbidden step or
     cites a procedure outside the expected set (any accepted step in a refusal scenario).
     Lower bound: a validly cited but semantically wrong step is not counted."""
-    forbidden = [normalize(f) for f in r.forbidden_steps]
+    forbidden = [fold(f) for f in r.forbidden_steps]
     bad = 0
     for instruction, cited in r.accepted_steps:
-        text = normalize(instruction)
+        text = fold(instruction)
         off_procedure = r.expected_refusal or any(c not in r.expected_procedures for c in cited)
-        if off_procedure or any(f in text for f in forbidden):
+        if off_procedure or any(_affirms(text, f) for f in forbidden):
             bad += 1
     return bad, len(r.accepted_steps)
+
+
+def fold(text: str) -> str:
+    """normalize() plus accent stripping: scenario files are written without accents, model
+    output has them. Only for the hallucination metric; citation checks stay accent-strict."""
+    decomposed = unicodedata.normalize("NFKD", normalize(text))
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+
+
+_NEGATORS = ("nao ", "nunca ", "evitar ", "evite ", "sem ", "impedir ", "proibido ")
+
+
+def _affirms(text: str, forbidden: str) -> bool:
+    """True when `forbidden` occurs in `text` outside a negation: "nao religar a linha" does not
+    count as recommending to reconnect. Heuristic: a negator within the 30 characters before
+    the phrase. Misses long-distance negation, so the metric stays a lower bound."""
+    start = text.find(forbidden)
+    while start != -1:
+        before = text[max(0, start - 30) : start]
+        if not any(n in before for n in _NEGATORS):
+            return True
+        start = text.find(forbidden, start + 1)
+    return False
 
 
 def refusal_precision_recall(
