@@ -9,6 +9,7 @@ import psycopg
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from copilot.adapters.inbound.http import schemas
 from copilot.adapters.outbound.postgres.audit import PostgresAudit
@@ -109,6 +110,8 @@ def create_app(deps: AppDeps) -> FastAPI:
     def invalid_payload(_: Request, exc: RequestValidationError) -> JSONResponse:
         problems = [{"loc": [str(p) for p in e["loc"]], "msg": e["msg"]} for e in exc.errors()]
         return _error(400, "invalid_payload", "payload ou parâmetro inválido", {"errors": problems})
+
+    app.mount("/static", StaticFiles(directory=_STATIC), name="static")
 
     @app.get("/", include_in_schema=False)
     def screen() -> FileResponse:
