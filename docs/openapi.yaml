@@ -1,0 +1,225 @@
+openapi: 3.1.0
+info:
+  title: Grid Contingency Copilot API
+  version: 0.1.0
+  description: >
+    Sugere passos de resposta para eventos de rede sinteticos, com citacao
+    obrigatoria e recusa explicita. Conteudo ficticio; nao usar em operacao real.
+servers:
+  - url: http://localhost:8000
+paths:
+  /health:
+    get:
+      summary: Verificacao de saude
+      responses:
+        "200":
+          description: API e banco disponiveis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: {type: string, example: ok}
+  /events:
+    post:
+      summary: Registra um evento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/EventCreate"}
+      responses:
+        "201":
+          description: Evento criado
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Event"}
+        "400": {$ref: "#/components/responses/Error"}
+  /events/{event_id}:
+    get:
+      summary: Consulta um evento
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "200":
+          description: Evento
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Event"}
+        "404": {$ref: "#/components/responses/Error"}
+  /events/{event_id}/suggestions:
+    post:
+      summary: Gera sugestao (ou recusa) para o evento
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "201":
+          description: Sugestao pendente de revisao, ou recusa
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Suggestion"}
+        "404": {$ref: "#/components/responses/Error"}
+        "503": {$ref: "#/components/responses/Error"}
+  /suggestions/{suggestion_id}:
+    get:
+      summary: Consulta uma sugestao
+      parameters:
+        - $ref: "#/components/parameters/SuggestionId"
+      responses:
+        "200":
+          description: Sugestao
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Suggestion"}
+        "404": {$ref: "#/components/responses/Error"}
+  /suggestions/{suggestion_id}/decision:
+    post:
+      summary: Aprova ou rejeita a sugestao
+      parameters:
+        - $ref: "#/components/parameters/SuggestionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/DecisionCreate"}
+      responses:
+        "200":
+          description: Sugestao com status final
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Suggestion"}
+        "404": {$ref: "#/components/responses/Error"}
+        "409": {$ref: "#/components/responses/Error"}
+        "422": {$ref: "#/components/responses/Error"}
+  /events/{event_id}/audit:
+    get:
+      summary: Trilha de auditoria do evento
+      parameters:
+        - $ref: "#/components/parameters/EventId"
+      responses:
+        "200":
+          description: Trilha em ordem cronologica
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/AuditTrail"}
+        "404": {$ref: "#/components/responses/Error"}
+components:
+  parameters:
+    EventId:
+      name: event_id
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+    SuggestionId:
+      name: suggestion_id
+      in: path
+      required: true
+      schema: {type: string, format: uuid}
+  responses:
+    Error:
+      description: Erro
+      content:
+        application/json:
+          schema: {$ref: "#/components/schemas/ErrorBody"}
+  schemas:
+    EventCreate:
+      type: object
+      required: [type, element, occurred_at, reported_by]
+      properties:
+        type: {type: string, example: line_trip_by_protection}
+        element: {type: string, example: LT-FICT-230-04}
+        occurred_at: {type: string, format: date-time}
+        attributes: {type: object, additionalProperties: true}
+        reported_by: {type: string}
+    Event:
+      allOf:
+        - $ref: "#/components/schemas/EventCreate"
+        - type: object
+          required: [id]
+          properties:
+            id: {type: string, format: uuid}
+    Citation:
+      type: object
+      required: [procedure_code, procedure_version, section, quote]
+      properties:
+        procedure_code: {type: string, example: PO-FICT-001}
+        procedure_version: {type: string, example: "1.0"}
+        section: {type: string}
+        quote:
+          type: string
+          description: Trecho literal presente no procedimento
+    Step:
+      type: object
+      required: [position, instruction, citations]
+      properties:
+        position: {type: integer, minimum: 1}
+        instruction: {type: string}
+        citations:
+          type: array
+          minItems: 1
+          items: {$ref: "#/components/schemas/Citation"}
+    Suggestion:
+      type: object
+      required: [id, event_id, status, steps, disclaimer]
+      properties:
+        id: {type: string, format: uuid}
+        event_id: {type: string, format: uuid}
+        status:
+          type: string
+          enum: [pending_review, refused, approved, rejected]
+        refusal_reason:
+          type: [string, "null"]
+          enum: [no_applicable_procedure, model_declined, no_valid_citation, null]
+        model: {type: [string, "null"]}
+        prompt_version: {type: [string, "null"]}
+        steps:
+          type: array
+          items: {$ref: "#/components/schemas/Step"}
+        disclaimer: {type: string}
+    DecisionCreate:
+      type: object
+      required: [outcome, decided_by]
+      properties:
+        outcome: {type: string, enum: [approve, reject]}
+        justification:
+          type: string
+          description: Obrigatoria quando outcome = reject
+        decided_by: {type: string}
+    AuditEntry:
+      type: object
+      required: [seq, kind, at, payload, hash]
+      properties:
+        seq: {type: integer}
+        kind:
+          type: string
+          enum:
+            - EVENT_RECEIVED
+            - RETRIEVAL_DONE
+            - LLM_CALLED
+            - CITATIONS_VALIDATED
+            - SUGGESTION_CREATED
+            - REFUSED
+            - DECISION_RECORDED
+        at: {type: string, format: date-time}
+        payload: {type: object, additionalProperties: true}
+        hash: {type: string}
+    AuditTrail:
+      type: object
+      required: [event_id, chain_valid, entries]
+      properties:
+        event_id: {type: string, format: uuid}
+        chain_valid: {type: boolean}
+        entries:
+          type: array
+          items: {$ref: "#/components/schemas/AuditEntry"}
+    ErrorBody:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: {type: string}
+            message: {type: string}
+            details: {type: object, additionalProperties: true}
