@@ -15,7 +15,9 @@ def build_search_query(event: Event) -> str:
     the procedures' `applies_to`, not through this text. The element id is left out on purpose:
     an id like "SE-FICT-01" yields the token "fict", which stem-matches "fictícia" in nearly
     every chunk and made unrelated events look covered."""
-    values = " ".join(str(v) for v in event.attributes.values())
+    # Sorted by key: PostgreSQL jsonb returns keys in a different order than they were sent, and
+    # the same event must always produce the same query.
+    values = " ".join(str(v) for _, v in sorted(event.attributes.items()))
     return f"{event.type.replace('_', ' ')} {values}".strip()
 
 

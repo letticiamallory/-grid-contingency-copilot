@@ -172,3 +172,9 @@ def test_injected_instruction_in_attributes_stays_inside_event_block():
 
 def test_search_query_uses_type_words_and_values_but_not_the_element_id():
     assert build_search_query(EVENT) == "line trip by protection distance failed"
+
+
+def test_search_query_does_not_depend_on_attribute_order():
+    a = Event(**{**EVENT.__dict__, "attributes": {"zone": 1, "protection": "distance"}})
+    b = Event(**{**EVENT.__dict__, "attributes": {"protection": "distance", "zone": 1}})
+    assert build_search_query(a) == build_search_query(b)

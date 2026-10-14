@@ -135,7 +135,8 @@ def test_llm_unavailable_is_503_and_creates_no_suggestion(make_client, db):
     response = client.post(f"/events/{event_id}/suggestions")
     assert response.status_code == 503
     assert response.json()["error"]["code"] == "llm_unavailable"
-    assert db.execute("SELECT count(*) FROM suggestions").fetchone()[0] == 0
+    count = db.execute("SELECT count(*) FROM suggestions WHERE event_id = %s", (event_id,))
+    assert count.fetchone()[0] == 0
 
 
 UNKNOWN_ID = "11111111-1111-1111-1111-111111111111"
