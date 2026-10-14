@@ -15,8 +15,6 @@
     src: url("/static/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2"); }
   @font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-display: swap;
     src: url("/static/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2"); }
-  @font-face { font-family: "Instrument Serif"; font-weight: 400; font-display: swap;
-    src: url("/static/fonts/instrument-serif-latin-400-normal.woff2") format("woff2"); }
 
   :root {
     color-scheme: light;
@@ -28,7 +26,6 @@
     --erro: #8f2d2d; --erro-soft: #f6e2e2; --ai: #4f4380; --ai-soft: #eeebf6;
     --sans: "IBM Plex Sans", system-ui, sans-serif;
     --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
-    --serif: "Instrument Serif", Georgia, serif;
     --rapido: 120ms ease-out;
   }
   @media (prefers-reduced-motion: reduce) { :root { --rapido: 0ms; } }
@@ -44,7 +41,7 @@
   .top-in { max-width: 1240px; margin: 0 auto; padding: 18px 36px; display: flex; align-items: center; gap: 20px;
     flex-wrap: wrap; }
   @media (max-width: 700px) { .top-in { padding: 16px; } }
-  .wordmark { font-family: var(--serif); font-size: 28px; line-height: 30px; letter-spacing: -.4px; margin: 0; }
+  .wordmark { font-size: 20px; line-height: 28px; font-weight: 600; letter-spacing: -.2px; margin: 0; }
   .wordmark::after { content: ""; display: block; width: 28px; height: 2px; background: var(--cobre); margin-top: 8px; }
   .tagline { margin: 0; color: var(--texto-2); font-size: 13px; line-height: 20px; max-width: 46ch; }
   .spacer { flex: 1; }
