@@ -24,3 +24,7 @@ class JustificationRequired(DomainError):
 
 class LLMUnavailable(DomainError):
     code = "llm_unavailable"
+
+
+class RetrievalUnavailable(DomainError):
+    code = "retrieval_unavailable"

@@ -1,4 +1,5 @@
 .PHONY: up down migrate ingest lint test eval-fake eval-calibrate eval audit-verify
+RETRIEVAL ?= lexical
 
 up:
 	docker compose up -d db
@@ -22,10 +23,10 @@ ingest:
 
 # Avaliacao (M4). eval-fake usa o LLM de eco: mede recuperacao, recusa e encanamento, nao qualidade.
 eval-calibrate:
-	uv run python -m copilot.adapters.inbound.cli.evaluate calibrate --llm echo
+	uv run python -m copilot.adapters.inbound.cli.evaluate calibrate --llm echo --retrieval $(RETRIEVAL)
 
 eval-fake:
-	uv run python -m copilot.adapters.inbound.cli.evaluate run --llm echo --split test
+	uv run python -m copilot.adapters.inbound.cli.evaluate run --llm echo --split test --retrieval $(RETRIEVAL)
 
 eval:
 	@echo "LLM real ainda nao implementado (depende de OPENROUTER_API_KEY e do adaptador, ADR-005)"; exit 1

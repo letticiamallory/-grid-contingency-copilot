@@ -11,12 +11,13 @@ from fastapi.responses import JSONResponse
 
 from copilot.adapters.inbound.http import schemas
 from copilot.adapters.outbound.postgres.audit import PostgresAudit
+from copilot.adapters.outbound.postgres.hybrid_retriever import HybridRetriever
 from copilot.adapters.outbound.postgres.lexical_retriever import LexicalRetriever
 from copilot.adapters.outbound.postgres.repositories import (
     PostgresEventRepository,
     PostgresSuggestionRepository,
 )
-from copilot.application.ports import LLMPort
+from copilot.application.ports import EmbedderPort, LLMPort, RetrieverPort
 from copilot.application.use_cases.events_and_decisions import (
     GetAuditTrail,
     RecordDecision,
@@ -33,6 +34,7 @@ _STATUS = {
     "suggestion_not_pending": 409,
     "justification_required": 422,
     "llm_unavailable": 503,
+    "retrieval_unavailable": 503,
 }
 
 
@@ -42,6 +44,7 @@ class AppDeps:
 
     connect: Callable[[], AbstractContextManager[psycopg.Connection]]
     llm: LLMPort
+    embedder: EmbedderPort | None = None  # None: lexical-only retrieval
     k: int = 6
     min_score: float = 0.0
 
@@ -53,6 +56,10 @@ def _error(
     if details:
         body["details"] = details
     return JSONResponse(status_code=status, content={"error": body})
+
+
+def _retriever(conn: psycopg.Connection, embedder: EmbedderPort | None) -> RetrieverPort:
+    return HybridRetriever(conn, embedder) if embedder else LexicalRetriever(conn)
 
 
 def _suggestion_out(s: Suggestion) -> dict[str, Any]:
@@ -132,7 +139,7 @@ def create_app(deps: AppDeps) -> FastAPI:
     def create_suggestion(event_id: uuid.UUID) -> Any:
         with deps.connect() as conn:
             generator = GenerateSuggestion(
-                LexicalRetriever(conn),
+                _retriever(conn, deps.embedder),
                 deps.llm,
                 PostgresAudit(conn),
                 k=deps.k,

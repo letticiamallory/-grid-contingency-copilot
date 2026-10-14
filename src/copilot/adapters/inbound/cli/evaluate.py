@@ -14,9 +14,11 @@ from pathlib import Path
 import psycopg
 
 from copilot.adapters.outbound.fakes.llm import EchoLLM
+from copilot.adapters.outbound.llm.openrouter_embedder import OpenRouterEmbedder
 from copilot.adapters.outbound.llm.openrouter_llm import OpenRouterLLM
+from copilot.adapters.outbound.postgres.hybrid_retriever import HybridRetriever
 from copilot.adapters.outbound.postgres.lexical_retriever import LexicalRetriever
-from copilot.application.ports import LLMPort
+from copilot.application.ports import LLMPort, RetrieverPort
 from copilot.application.prompting import PROMPT_VERSION
 from copilot.config import Settings
 from copilot.evaluation import report
@@ -43,6 +45,17 @@ def _llm(name: str) -> LLMPort:
     raise SystemExit(f"LLM desconhecido: {name!r} (use 'echo' ou 'openrouter:<modelo>')")
 
 
+def _retriever(name: str, conn: psycopg.Connection) -> RetrieverPort:
+    if name == "lexical":
+        return LexicalRetriever(conn)
+    settings = Settings()
+    if not settings.openrouter_api_key:
+        raise SystemExit("OPENROUTER_API_KEY nao configurada (necessaria para --retrieval hybrid).")
+    return HybridRetriever(
+        conn, OpenRouterEmbedder(settings.openrouter_api_key, settings.embedding_model)
+    )
+
+
 def _commit() -> str:
     try:
         out = subprocess.run(
@@ -57,11 +70,14 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="evaluate")
     parser.add_argument("command", choices=["calibrate", "run"])
     parser.add_argument("--scenarios-dir", type=Path, default=Path("eval/scenarios"))
-    parser.add_argument("--threshold-file", type=Path, default=Path("eval/threshold.json"))
+    parser.add_argument("--retrieval", choices=["lexical", "hybrid"], default="lexical")
+    parser.add_argument("--threshold-file", type=Path, default=None)
     parser.add_argument("--reports-dir", type=Path, default=Path("eval/reports"))
     parser.add_argument("--split", choices=["calibration", "test"], default="test")
     parser.add_argument("--llm", default="echo")
     args = parser.parse_args(argv)
+    # Score scales differ between retrievers, so each has its own calibrated threshold.
+    args.threshold_file = args.threshold_file or Path(f"eval/threshold-{args.retrieval}.json")
 
     scenarios = load_scenarios(args.scenarios_dir)
     problems = structural_problems(scenarios)
@@ -69,7 +85,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"AVISO: {problem}", file=sys.stderr)
 
     with psycopg.connect(Settings().database_url, connect_timeout=5) as conn:
-        retriever = LexicalRetriever(conn)
+        retriever = _retriever(args.retrieval, conn)
         if args.command == "calibrate":
             chosen = [s for s in scenarios if s.split == "calibration"]
             results = run_all(chosen, retriever, _llm(args.llm), k=K, min_score=0.0)
@@ -91,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
         "llm": args.llm,
         "prompt_version": PROMPT_VERSION,
         "limiar_de_recusa": min_score,
-        "recuperacao": "lexical (PostgreSQL full-text)",
+        "recuperacao": args.retrieval,
         "autoria_dos_cenarios": "rascunhos do assistente, nao revisados (ADR-008)",
     }
     if args.llm == "echo":
@@ -99,7 +115,7 @@ def main(argv: list[str] | None = None) -> int:
     title = f"Avaliacao {meta['data']} ({args.llm}, {args.split})"
     args.reports_dir.mkdir(parents=True, exist_ok=True)
     safe_llm = args.llm.replace(":", "_").replace("/", "_")
-    stem = args.reports_dir / f"{meta['data']}-{safe_llm}-{args.split}"
+    stem = args.reports_dir / f"{meta['data']}-{safe_llm}-{args.retrieval}-{args.split}"
     stem.with_suffix(".md").write_text(
         report.render_markdown(title, meta, summary, categories), encoding="utf-8"
     )
