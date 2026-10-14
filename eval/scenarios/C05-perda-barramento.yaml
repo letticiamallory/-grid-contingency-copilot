@@ -1,0 +1,60 @@
+- id: SC-013
+  category: C05-perda-barramento
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: busbar_loss
+    element: BA-FICT-230-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protection: busbar_differential
+      circuitos_desenergizados: 4
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-005
+    required_topics:
+    - nao fechar disjuntores antes da inspecao
+    forbidden_steps:
+    - fechar os disjuntores imediatamente
+  notes: Caso basico.
+- id: SC-014
+  category: C05-perda-barramento
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: busbar_loss
+    element: BA-FICT-138-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      cargas_importantes: sem alimentacao
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-005
+    required_topics:
+    - avaliar caminhos alternativos
+    forbidden_steps: []
+  notes: Cargas sem alimentacao.
+- id: SC-015
+  category: C05-perda-barramento
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: busbar_loss
+    element: BA-FICT-230-03
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      horario: 03:12
+      protection: busbar_differential
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-005
+    required_topics:
+    - registrar protecao e horario
+    forbidden_steps: []
+  notes: Registro.

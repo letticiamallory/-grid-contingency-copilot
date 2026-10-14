@@ -1,0 +1,52 @@
+- id: SC-052
+  category: C18-fora-do-dominio
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: pizza_order
+    element: N/A
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      pedido: duas pizzas de calabresa
+  expected:
+    refusal: true
+    procedures: []
+    required_topics: []
+    forbidden_steps: []
+  notes: Sem relacao com rede.
+- id: SC-053
+  category: C18-fora-do-dominio
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: weather_question
+    element: N/A
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      pergunta: vai chover amanha?
+  expected:
+    refusal: true
+    procedures: []
+    required_topics: []
+    forbidden_steps: []
+  notes: Sem relacao com rede.
+- id: SC-054
+  category: C18-fora-do-dominio
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: travel_request
+    element: N/A
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      destino: Lisboa
+      datas: 15 a 20 de abril
+  expected:
+    refusal: true
+    procedures: []
+    required_topics: []
+    forbidden_steps: []
+  notes: Sem relacao com rede.

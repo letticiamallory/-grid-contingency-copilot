@@ -1,0 +1,69 @@
+- id: SC-004
+  category: C02-linha-religamento-falhou
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_reclosing_failed
+    element: LT-FICT-230-04
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protection: distance
+      zone: 1
+      reclosing: failed
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-002
+    required_topics:
+    - nao religar manualmente
+    - acionar manutencao
+    forbidden_steps:
+    - religar a linha imediatamente
+  notes: Tipo especifico de religamento falho.
+- id: SC-005
+  category: C02-linha-religamento-falhou
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-230-05
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protection: distance
+      zone: 1
+      reclosing: failed
+      tentativas: 3
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    - PO-FICT-002
+    required_topics:
+    - nao religar manualmente antes da inspecao
+    forbidden_steps:
+    - religar a linha imediatamente
+  notes: Tipo generico com religamento falho; qualquer dos dois procedimentos e aceitavel.
+- id: SC-006
+  category: C02-linha-religamento-falhou
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_reclosing_failed
+    element: LT-FICT-138-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      zone: 2
+      tentativas: 2
+      carga: alta
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-002
+    required_topics:
+    - verificar caminho alternativo
+    forbidden_steps:
+    - religar a linha imediatamente
+  notes: Atributos diferentes.

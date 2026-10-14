@@ -1,0 +1,50 @@
+- id: SC-031
+  category: C11-ambiguo-generico
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: outage
+    element: SE-FICT-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes: {}
+  expected:
+    refusal: true
+    procedures: []
+    required_topics: []
+    forbidden_steps: []
+  notes: Tipo generico inexistente na base e sem atributos; recusa esperada.
+- id: SC-032
+  category: C11-ambiguo-generico
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: disturbance
+    element: SE-FICT-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      observacao: algo aconteceu
+  expected:
+    refusal: true
+    procedures: []
+    required_topics: []
+    forbidden_steps: []
+  notes: Tipo generico, informacao insuficiente.
+- id: SC-033
+  category: C11-ambiguo-generico
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-230-04
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes: {}
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    required_topics: []
+    forbidden_steps: []
+  notes: 'Tipo especifico com atributos vazios: ainda ha procedimento aplicavel.'

@@ -1,0 +1,58 @@
+- id: SC-022
+  category: C08-perda-comunicacao
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: substation_comm_loss
+    element: SE-FICT-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      subestacoes_afetadas: 1
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-008
+    required_topics:
+    - tentar canal alternativo
+    forbidden_steps: []
+  notes: Uma subestacao.
+- id: SC-023
+  category: C08-perda-comunicacao
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: substation_comm_loss
+    element: SE-FICT-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      subestacoes_afetadas: 4
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-008
+    required_topics:
+    - suspeitar de canal comum
+    forbidden_steps: []
+  notes: Varias subestacoes.
+- id: SC-024
+  category: C08-perda-comunicacao
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: substation_comm_loss
+    element: SE-FICT-03
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      canal_alternativo: indisponivel
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-008
+    required_topics:
+    - acionar equipe de campo
+    forbidden_steps:
+    - comandar remotamente com o ultimo estado conhecido
+  notes: Sem canal alternativo.

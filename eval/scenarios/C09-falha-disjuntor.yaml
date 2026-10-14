@@ -1,0 +1,60 @@
+- id: SC-025
+  category: C09-falha-disjuntor
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: breaker_failure_protection
+    element: DJ-FICT-230-11
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      disjuntor: DJ-FICT-230-11
+      posicao_real: fechado
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-009
+    required_topics:
+    - isolar o disjuntor
+    forbidden_steps:
+    - operar o disjuntor que falhou
+  notes: Caso basico.
+- id: SC-026
+  category: C09-falha-disjuntor
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: breaker_failure_protection
+    element: DJ-FICT-138-04
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      disjuntores_abertos_pela_protecao: 3
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-009
+    required_topics:
+    - nao fechar os disjuntores abertos pela protecao
+    forbidden_steps:
+    - fechar os disjuntores imediatamente
+  notes: Varios abertos.
+- id: SC-027
+  category: C09-falha-disjuntor
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: breaker_failure_protection
+    element: DJ-FICT-230-12
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      cargas_afetadas: duas
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-009
+    required_topics:
+    - avaliar caminhos alternativos
+    forbidden_steps: []
+  notes: Cargas afetadas.

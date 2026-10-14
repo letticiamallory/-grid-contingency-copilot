@@ -1,0 +1,58 @@
+- id: SC-043
+  category: C15-cobertura-parcial
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_reclosing_failed
+    element: LT-FICT-230-04
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      zone: 1
+      reclosing: failed
+      carga_vizinha: alta
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-002
+    required_topics:
+    - informar supervisor sobre carregamento
+    forbidden_steps: []
+  notes: So o trecho de contencao/acionamento se aplica.
+- id: SC-044
+  category: C15-cobertura-parcial
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: transformer_differential_trip
+    element: TR-FICT-230-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      paralelo: indisponivel
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-003
+    required_topics: []
+    forbidden_steps: []
+  notes: Passo de transferencia de carga nao se aplica.
+- id: SC-045
+  category: C15-cobertura-parcial
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: frequency_deviation
+    element: SIS-FICT-03
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      frequencia_hz: 59.45
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-010
+    required_topics:
+    - solicitar aumento de geracao
+    forbidden_steps: []
+  notes: Somente o ramo de frequencia baixa se aplica.

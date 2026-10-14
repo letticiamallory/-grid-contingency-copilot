@@ -1,0 +1,59 @@
+- id: SC-037
+  category: C13-evento-combinado
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: transformer_overload
+    element: TR-FICT-230-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      carga_pct: 120
+      canal: comunicacao perdida com a subestacao
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-004
+    - PO-FICT-008
+    required_topics: []
+    forbidden_steps: []
+  notes: Sobrecarga e perda de comunicacao; tipo cobre so a primeira.
+- id: SC-038
+  category: C13-evento-combinado
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: undervoltage
+    element: BA-FICT-138-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: 120
+      disjuntor: falha de disjuntor reportada
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-006
+    - PO-FICT-009
+    required_topics: []
+    forbidden_steps: []
+  notes: Subtensao com falha de disjuntor.
+- id: SC-039
+  category: C13-evento-combinado
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: busbar_loss
+    element: BA-FICT-230-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      comunicacao: perdida
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-005
+    - PO-FICT-008
+    required_topics: []
+    forbidden_steps: []
+  notes: Perda de barramento e de comunicacao.

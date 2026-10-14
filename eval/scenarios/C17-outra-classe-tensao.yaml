@@ -1,0 +1,51 @@
+- id: SC-049
+  category: C17-outra-classe-tensao
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: hvdc_converter_trip
+    element: CV-FICT-800-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      classe_kv: 800
+  expected:
+    refusal: true
+    procedures: []
+    required_topics: []
+    forbidden_steps: []
+  notes: 'Elo de corrente continua: sem procedimento.'
+- id: SC-050
+  category: C17-outra-classe-tensao
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: series_capacitor_fault
+    element: CS-FICT-500-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      classe_kv: 500
+  expected:
+    refusal: true
+    procedures: []
+    required_topics: []
+    forbidden_steps: []
+  notes: Capacitor serie em 500 kV.
+- id: SC-051
+  category: C17-outra-classe-tensao
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: distribution_feeder_fault
+    element: AL-FICT-13-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      classe_kv: 13.8
+  expected:
+    refusal: true
+    procedures: []
+    required_topics: []
+    forbidden_steps: []
+  notes: 'Distribuicao: fora do escopo da base.'

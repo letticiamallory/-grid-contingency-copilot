@@ -1,0 +1,65 @@
+- id: SC-001
+  category: C01-linha-religamento-ok
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-230-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protection: distance
+      zone: 1
+      reclosing: success
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    required_topics:
+    - observacao reforcada apos religamento bem-sucedido
+    forbidden_steps:
+    - desligar a linha vizinha
+  notes: Caso basico.
+- id: SC-002
+  category: C01-linha-religamento-ok
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-138-07
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protection: distance
+      zone: 2
+      reclosing: success
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    required_topics:
+    - registrar horario e zona
+    forbidden_steps: []
+  notes: Zona 2.
+- id: SC-003
+  category: C01-linha-religamento-ok
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-230-09
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protection: distance
+      zone: 1
+      reclosing: success
+      vizinhanca: sem outros desligamentos
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    required_topics:
+    - verificar desligamentos na vizinhanca
+    forbidden_steps: []
+  notes: Com informacao de vizinhanca.

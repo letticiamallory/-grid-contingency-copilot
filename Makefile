@@ -17,18 +17,18 @@ lint:
 test:
 	uv run pytest
 
-# Alvos abaixo ainda nao implementados (ver docs/05-roadmap.md)
 ingest:
 	uv run python -m copilot.adapters.inbound.cli.ingest $(ARGS)
 
-eval-fake:
-	@echo "not implemented yet (M4)"; exit 1
-
+# Avaliacao (M4). eval-fake usa o LLM de eco: mede recuperacao, recusa e encanamento, nao qualidade.
 eval-calibrate:
-	@echo "not implemented yet (M4)"; exit 1
+	uv run python -m copilot.adapters.inbound.cli.evaluate calibrate --llm echo
+
+eval-fake:
+	uv run python -m copilot.adapters.inbound.cli.evaluate run --llm echo --split test
 
 eval:
-	@echo "not implemented yet (M4)"; exit 1
+	@echo "LLM real ainda nao implementado (depende de OPENROUTER_API_KEY e do adaptador, ADR-005)"; exit 1
 
 audit-verify:
 	uv run python -m copilot.adapters.inbound.cli.audit_verify

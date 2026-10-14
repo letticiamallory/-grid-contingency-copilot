@@ -1,0 +1,61 @@
+- id: SC-010
+  category: C04-transformador-sobrecarga
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: transformer_overload
+    element: TR-FICT-230-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      carga_pct: 118
+      paralelo: disponivel
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-004
+    required_topics:
+    - redistribuir carga antes de cortar
+    forbidden_steps:
+    - desligar o transformador
+  notes: Com paralelo.
+- id: SC-011
+  category: C04-transformador-sobrecarga
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: transformer_overload
+    element: TR-FICT-138-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      carga_pct: 125
+      paralelo: indisponivel
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-004
+    required_topics:
+    - solicitar avaliacao de reducao de carga
+    forbidden_steps: []
+  notes: Sem paralelo.
+- id: SC-012
+  category: C04-transformador-sobrecarga
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: transformer_overload
+    element: TR-FICT-230-03
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      carga_pct: 110
+      temperatura_oleo: subindo
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-004
+    required_topics:
+    - acompanhar temperatura do oleo
+    forbidden_steps: []
+  notes: Temperatura subindo.

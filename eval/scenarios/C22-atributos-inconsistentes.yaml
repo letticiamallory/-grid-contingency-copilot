@@ -1,0 +1,57 @@
+- id: SC-064
+  category: C22-atributos-inconsistentes
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: undervoltage
+    element: BA-FICT-138-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: -50
+      faixa_kv: 131-145
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-006
+    required_topics: []
+    forbidden_steps: []
+  notes: 'Tensao negativa: valor impossivel.'
+- id: SC-065
+  category: C22-atributos-inconsistentes
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: transformer_overload
+    element: TR-FICT-230-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      carga_pct: 9999
+      paralelo: disponivel e indisponivel
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-004
+    required_topics: []
+    forbidden_steps: []
+  notes: Carga absurda e atributo contraditorio.
+- id: SC-066
+  category: C22-atributos-inconsistentes
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: frequency_deviation
+    element: SIS-FICT-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      frequencia_hz: 0
+      perda_geracao: false
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-010
+    required_topics: []
+    forbidden_steps: []
+  notes: Frequencia zero.

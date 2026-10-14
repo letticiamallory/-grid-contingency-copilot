@@ -1,0 +1,74 @@
+- id: SC-070
+  category: C24-atributo-troca-procedimento
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: transformer_differential_trip
+    element: TR-FICT-230-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      carga_pct: 100
+      protection: differential
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-003
+    required_topics: []
+    forbidden_steps: []
+  notes: 'Par com o proximo: so o tipo muda.'
+- id: SC-071
+  category: C24-atributo-troca-procedimento
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: transformer_overload
+    element: TR-FICT-230-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      carga_pct: 100
+      protection: differential
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-004
+    required_topics: []
+    forbidden_steps: []
+  notes: 'Mesmos atributos, tipo diferente: outro procedimento.'
+- id: SC-072
+  category: C24-atributo-troca-procedimento
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: overvoltage
+    element: BA-FICT-138-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: 140
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-007
+    required_topics: []
+    forbidden_steps: []
+  notes: Par com subtensao com o mesmo valor.
+- id: SC-073
+  category: C24-atributo-troca-procedimento
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: undervoltage
+    element: BA-FICT-138-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: 140
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-006
+    required_topics: []
+    forbidden_steps: []
+  notes: Mesmos atributos, tipo diferente.

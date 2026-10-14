@@ -1,0 +1,61 @@
+- id: SC-034
+  category: C12-dois-procedimentos
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: busbar_loss
+    element: BA-FICT-230-05
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      fase: recomposicao
+      liberacao_manutencao: true
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-005
+    - PO-FICT-013
+    required_topics:
+    - recomposicao so apos liberacao
+    forbidden_steps:
+    - fechar todos os circuitos de uma vez
+  notes: Contencao (005) e recomposicao (013) se aplicam ao mesmo tipo.
+- id: SC-035
+  category: C12-dois-procedimentos
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: busbar_loss
+    element: BA-FICT-138-06
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      fase: contencao
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-005
+    - PO-FICT-013
+    required_topics:
+    - nao fechar disjuntores antes da inspecao
+    forbidden_steps: []
+  notes: Mesmo tipo, fase de contencao.
+- id: SC-036
+  category: C12-dois-procedimentos
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-230-04
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      reclosing: failed
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    - PO-FICT-002
+    required_topics: []
+    forbidden_steps: []
+  notes: 001 e 002 se sobrepoem; 011 (revogado) nao deve aparecer.

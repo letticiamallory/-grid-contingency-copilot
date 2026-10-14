@@ -1,0 +1,59 @@
+- id: SC-019
+  category: C07-sobretensao
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: overvoltage
+    element: BA-FICT-230-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: 252
+      linha_em_vazio: true
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-007
+    required_topics:
+    - verificar linhas em vazio
+    forbidden_steps: []
+  notes: Linha em vazio.
+- id: SC-020
+  category: C07-sobretensao
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: overvoltage
+    element: BA-FICT-138-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: 154
+      capacitores_em_servico: 2
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-007
+    required_topics:
+    - retirar capacitores desnecessarios
+    forbidden_steps: []
+  notes: Capacitores em servico.
+- id: SC-021
+  category: C07-sobretensao
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: overvoltage
+    element: BA-FICT-230-03
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: 249
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-007
+    required_topics:
+    - colocar reatores em servico
+    forbidden_steps: []
+  notes: Poucos atributos.

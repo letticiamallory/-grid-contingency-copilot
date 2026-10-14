@@ -1,0 +1,56 @@
+- id: SC-040
+  category: C14-terminologia-alternativa
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip
+    element: LT-FICT-230-04
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protecao: distancia
+      religamento: falhou
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    - PO-FICT-002
+    required_topics: []
+    forbidden_steps: []
+  notes: 'Tipo com nome fora do vocabulario da base: expoe a limitacao do filtro por applies_to.'
+- id: SC-041
+  category: C14-terminologia-alternativa
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: trafo_diferencial
+    element: TR-FICT-138-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protecao: diferencial
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-003
+    required_topics: []
+    forbidden_steps: []
+  notes: Abreviacao em portugues no tipo.
+- id: SC-042
+  category: C14-terminologia-alternativa
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: undervoltage
+    element: BA-FICT-138-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      descricao: tensao baixa na barra apos desligamento
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-006
+    required_topics: []
+    forbidden_steps: []
+  notes: Tipo correto, descricao em linguagem livre.

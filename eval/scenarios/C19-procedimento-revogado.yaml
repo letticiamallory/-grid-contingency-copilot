@@ -1,0 +1,60 @@
+- id: SC-055
+  category: C19-procedimento-revogado
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-230-04
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protection: distance
+      zone: 1
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    - PO-FICT-002
+    required_topics: []
+    forbidden_steps: []
+  notes: 'Existe PO-FICT-011 revogado para o mesmo tipo: so a versao vigente (001) pode ser usada.'
+- id: SC-056
+  category: C19-procedimento-revogado
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-138-08
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protection: distance
+      reclosing: success
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    - PO-FICT-002
+    required_topics: []
+    forbidden_steps: []
+  notes: Idem; 002 tambem se aplica ao tipo.
+- id: SC-057
+  category: C19-procedimento-revogado
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-230-10
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      protection: distance
+      zone: 3
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    - PO-FICT-002
+    required_topics: []
+    forbidden_steps: []
+  notes: Idem; 002 tambem se aplica ao tipo.

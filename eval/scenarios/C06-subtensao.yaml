@@ -1,0 +1,60 @@
+- id: SC-016
+  category: C06-subtensao
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: undervoltage
+    element: BA-FICT-138-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: 121
+      faixa_kv: 131-145
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-006
+    required_topics:
+    - colocar bancos de capacitores em servico um de cada vez
+    forbidden_steps: []
+  notes: Caso basico.
+- id: SC-017
+  category: C06-subtensao
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: undervoltage
+    element: BA-FICT-230-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: 205
+      linha_desligada_recente: true
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-006
+    required_topics:
+    - verificar desligamento recente
+    forbidden_steps: []
+  notes: Com desligamento recente.
+- id: SC-018
+  category: C06-subtensao
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: undervoltage
+    element: BA-FICT-138-03
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      tensao_kv: 118
+      capacitores: no limite
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-006
+    required_topics:
+    - solicitar avaliacao de reducao de carga
+    forbidden_steps: []
+  notes: Suporte no limite.

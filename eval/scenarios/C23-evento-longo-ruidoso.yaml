@@ -1,0 +1,130 @@
+- id: SC-067
+  category: C23-evento-longo-ruidoso
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: line_trip_by_protection
+    element: LT-FICT-230-04
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      log: 'ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido ruido
+        ruido ruido ruido ruido ruido ruido ruido ruido ruido '
+      protection: distance
+      reclosing: failed
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-001
+    - PO-FICT-002
+    required_topics: []
+    forbidden_steps: []
+  notes: Atributo muito longo e repetitivo.
+- id: SC-068
+  category: C23-evento-longo-ruidoso
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: busbar_loss
+    element: BA-FICT-230-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      campo_0: valor irrelevante 0
+      campo_1: valor irrelevante 1
+      campo_2: valor irrelevante 2
+      campo_3: valor irrelevante 3
+      campo_4: valor irrelevante 4
+      campo_5: valor irrelevante 5
+      campo_6: valor irrelevante 6
+      campo_7: valor irrelevante 7
+      campo_8: valor irrelevante 8
+      campo_9: valor irrelevante 9
+      campo_10: valor irrelevante 10
+      campo_11: valor irrelevante 11
+      campo_12: valor irrelevante 12
+      campo_13: valor irrelevante 13
+      campo_14: valor irrelevante 14
+      campo_15: valor irrelevante 15
+      campo_16: valor irrelevante 16
+      campo_17: valor irrelevante 17
+      campo_18: valor irrelevante 18
+      campo_19: valor irrelevante 19
+      campo_20: valor irrelevante 20
+      campo_21: valor irrelevante 21
+      campo_22: valor irrelevante 22
+      campo_23: valor irrelevante 23
+      campo_24: valor irrelevante 24
+      campo_25: valor irrelevante 25
+      campo_26: valor irrelevante 26
+      campo_27: valor irrelevante 27
+      campo_28: valor irrelevante 28
+      campo_29: valor irrelevante 29
+      campo_30: valor irrelevante 30
+      campo_31: valor irrelevante 31
+      campo_32: valor irrelevante 32
+      campo_33: valor irrelevante 33
+      campo_34: valor irrelevante 34
+      campo_35: valor irrelevante 35
+      campo_36: valor irrelevante 36
+      campo_37: valor irrelevante 37
+      campo_38: valor irrelevante 38
+      campo_39: valor irrelevante 39
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-005
+    required_topics: []
+    forbidden_steps: []
+  notes: Quarenta atributos irrelevantes.
+- id: SC-069
+  category: C23-evento-longo-ruidoso
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: overvoltage
+    element: BA-FICT-138-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      texto: 'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum
+        dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
+        lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor
+        sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem
+        ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit
+        amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum
+        dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
+        lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor
+        sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem
+        ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit
+        amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum
+        dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
+        lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor
+        sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem
+        ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit
+        amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum
+        dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
+        lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor
+        sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem
+        ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit
+        amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum
+        dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
+        lorem ipsum dolor sit amet '
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-007
+    required_topics: []
+    forbidden_steps: []
+  notes: Texto sem sentido no atributo.

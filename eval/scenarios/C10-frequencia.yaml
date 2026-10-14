@@ -1,0 +1,60 @@
+- id: SC-028
+  category: C10-frequencia
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: frequency_deviation
+    element: SIS-FICT-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      frequencia_hz: 59.4
+      perda_geracao: true
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-010
+    required_topics:
+    - solicitar aumento de geracao
+    forbidden_steps: []
+  notes: Abaixo da faixa.
+- id: SC-029
+  category: C10-frequencia
+  split: test
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: frequency_deviation
+    element: SIS-FICT-01
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      frequencia_hz: 60.6
+      perda_carga: true
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-010
+    required_topics:
+    - solicitar reducao de geracao
+    forbidden_steps: []
+  notes: Acima da faixa.
+- id: SC-030
+  category: C10-frequencia
+  split: calibration
+  written_before_kb: false
+  author: assistant-draft
+  event:
+    type: frequency_deviation
+    element: SIS-FICT-02
+    occurred_at: '2026-03-14T02:41:00-03:00'
+    attributes:
+      frequencia_hz: 59.2
+      ilha: true
+  expected:
+    refusal: false
+    procedures:
+    - PO-FICT-010
+    required_topics:
+    - verificar separacao de ilha
+    forbidden_steps: []
+  notes: Ilha.
