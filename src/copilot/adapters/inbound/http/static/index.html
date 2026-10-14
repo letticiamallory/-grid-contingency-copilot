@@ -54,17 +54,22 @@
   .tagline { margin: 10px 0 0; color: var(--texto-2); font-size: 13px; line-height: 20px; }
   .nav { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
   @media (max-width: 900px) { .nav { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-  .nav li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px;
-    color: var(--texto-2); font-weight: 500; }
+  .nav li { border-radius: 6px; color: var(--texto-2); font-weight: 500; }
+  .navbtn { all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+  .navbtn:hover:not(:disabled) { background: var(--fundo-base); }
+  .navbtn:disabled { cursor: default; opacity: .6; }
+  .navbtn:focus-visible { outline: 2px solid var(--marca); outline-offset: 2px; }
   .nav li .mk { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--borda-campo);
     display: grid; place-items: center; }
+  .card, h2 { scroll-margin-top: 16px; }
   .nav li.on { background: var(--fundo-superficie); color: var(--texto); box-shadow: inset 0 0 0 1px var(--borda); }
   .nav li.on .mk { border-color: var(--marca); background: var(--marca); }
   .nav li.on .mk::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #fff; }
   .nav li.done { color: var(--texto); }
   .nav li.done .mk { border-color: var(--ok); background: var(--ok); color: #fff; }
   .nav .sr { position: absolute; left: -9999px; }
-  @media (max-width: 900px) { .nav li { padding: 6px 4px; font-size: 12px; flex-direction: column; gap: 4px; text-align: center; } }
+  @media (max-width: 900px) { .navbtn { padding: 6px 4px; font-size: 12px; flex-direction: column; gap: 4px; text-align: center; } }
   .rail-foot { margin-top: auto; display: grid; gap: 8px; font-size: 13px; color: var(--texto-2); }
   @media (max-width: 900px) { .rail-foot { display: none; } }
   .rail-foot a { color: var(--marca); text-underline-offset: 3px; }
@@ -174,10 +179,10 @@
       <p class="tagline">Passos de resposta a eventos de rede, com a fonte de cada passo.</p>
     </div>
     <ol class="nav" id="nav" aria-label="Etapas">
-      <li data-s="1" class="on"><span class="mk" aria-hidden="true"></span>Evento</li>
-      <li data-s="2"><span class="mk" aria-hidden="true"></span>Sugestão</li>
-      <li data-s="3"><span class="mk" aria-hidden="true"></span>Decisão</li>
-      <li data-s="4"><span class="mk" aria-hidden="true"></span>Auditoria</li>
+      <li data-s="1" class="on"><button type="button" class="navbtn" data-t="c-event"><span class="mk" aria-hidden="true"></span>Evento</button></li>
+      <li data-s="2"><button type="button" class="navbtn" data-t="c-result"><span class="mk" aria-hidden="true"></span>Sugestão</button></li>
+      <li data-s="3"><button type="button" class="navbtn" data-t="decision"><span class="mk" aria-hidden="true"></span>Decisão</button></li>
+      <li data-s="4"><button type="button" class="navbtn" data-t="auditBox"><span class="mk" aria-hidden="true"></span>Auditoria</button></li>
     </ol>
     <div class="rail-foot">
       <div class="live"><span class="dot" id="hdot"></span><span id="htxt">verificando a API</span></div>
@@ -191,8 +196,8 @@
 
     <div class="grid">
       <div class="stack">
-        <section class="card" aria-labelledby="h-event">
-          <h2 id="h-event">Evento</h2>
+        <section class="card" id="c-event" aria-labelledby="h-event">
+          <h2 id="h-event" tabindex="-1">Evento</h2>
           <div class="ex" id="examples" role="group" aria-label="Exemplos de evento"></div>
           <form id="form" autocomplete="off">
             <label for="type">Tipo</label>
@@ -219,8 +224,8 @@
       </div>
 
       <div class="stack">
-        <section class="card" aria-labelledby="h-result" aria-live="polite">
-          <div class="head"><h2 id="h-result">Sugestão</h2><span id="state"></span></div>
+        <section class="card" id="c-result" aria-labelledby="h-result" aria-live="polite">
+          <div class="head"><h2 id="h-result" tabindex="-1">Sugestão</h2><span id="state"></span></div>
           <div id="result">
             <div class="empty">
               <p>Nenhuma sugestão ainda. Escolha um exemplo ou preencha o evento e clique em
@@ -231,7 +236,7 @@
         </section>
 
         <section class="card" id="decision" hidden aria-labelledby="h-dec">
-          <h2 id="h-dec">Decisão do operador</h2>
+          <h2 id="h-dec" tabindex="-1">Decisão do operador</h2>
           <p class="sub">Nada é aprovado sem uma decisão humana.</p>
           <div class="two">
             <div><label for="decidedBy" style="margin-top:0">Decidido por</label><input id="decidedBy" value="operador.teste"></div>
@@ -247,7 +252,7 @@
         </section>
 
         <section class="card" id="auditBox" hidden aria-labelledby="h-aud">
-          <div class="head"><h2 id="h-aud">Trilha de auditoria</h2><span id="chain"></span></div>
+          <div class="head"><h2 id="h-aud" tabindex="-1">Trilha de auditoria</h2><span id="chain"></span></div>
           <p class="sub">Só acréscimo, encadeada por hash: alterar uma linha quebra a cadeia.</p>
           <ol class="tl" id="audit"></ol>
         </section>
@@ -339,16 +344,34 @@ async function api(method, path, body) {
   return data;
 }
 
+const TARGETS = {1: "c-event", 2: "c-result", 3: "decision", 4: "auditBox"};
 function stage(active, done = []) {
   for (const li of $("nav").children) {
     const n = Number(li.dataset.s);
     li.className = done.includes(n) ? "done" : (n === active ? "on" : "");
-    const mk = li.firstElementChild;
-    clear(mk, ...(done.includes(n) ? [icon("check", 11)] : []));
-    li.querySelector(".sr")?.remove();
-    if (done.includes(n)) li.append(el("span", {class: "sr"}, " (concluída)"));
-    if (n === active) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+    const btn = li.firstElementChild;
+    clear(btn.firstElementChild, ...(done.includes(n) ? [icon("check", 11)] : []));
+    btn.querySelector(".sr")?.remove();
+    if (done.includes(n)) btn.append(el("span", {class: "sr"}, " (concluída)"));
+    if (n === active) btn.setAttribute("aria-current", "step"); else btn.removeAttribute("aria-current");
   }
+  syncNav();
+}
+// A step is reachable once its card exists (the first two always do). Call again whenever a
+// card is shown or hidden after stage(), e.g. when the audit trail finishes loading.
+function syncNav() {
+  for (const btn of document.querySelectorAll(".navbtn")) {
+    const n = Number(btn.parentElement.dataset.s);
+    btn.disabled = n >= 3 && $(TARGETS[n]).hidden;
+    btn.title = btn.disabled ? "Disponível depois de gerar a sugestão" : "";
+  }
+}
+for (const btn of document.querySelectorAll(".navbtn")) {
+  btn.addEventListener("click", () => {
+    const card = $(btn.dataset.t);
+    card.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
+    card.querySelector("h2")?.focus({preventScroll: true});
+  });
 }
 
 let current = null; // {eventId, suggestionId}
@@ -396,6 +419,7 @@ async function renderAudit(eventId) {
       el("div", {class: "h"}, "hash " + e.hash.slice(0, 12)),
       el("details", {}, el("summary", {}, "Ver detalhes"),
         el("pre", {}, JSON.stringify(e.payload, null, 2)))))));
+  syncNav();
 }
 
 $("form").addEventListener("submit", async (ev) => {
