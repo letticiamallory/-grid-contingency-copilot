@@ -3,6 +3,8 @@
 Run: uv run uvicorn copilot.main:app
 """
 
+from pathlib import Path
+
 import psycopg
 
 from copilot.adapters.inbound.http.app import AppDeps, create_app
@@ -12,6 +14,7 @@ from copilot.adapters.outbound.llm.resilient import FallbackLLM
 from copilot.adapters.outbound.llm.unconfigured import UnconfiguredLLM
 from copilot.application.ports import EmbedderPort, LLMPort
 from copilot.config import Settings
+from copilot.evaluation.runner import load_threshold
 
 
 def build_llm(settings: Settings) -> LLMPort:
@@ -31,12 +34,25 @@ def build_embedder(settings: Settings) -> EmbedderPort | None:
     return OpenRouterEmbedder(settings.openrouter_api_key, settings.embedding_model)
 
 
+def refusal_threshold(settings: Settings, hybrid: bool) -> float:
+    """The calibrated threshold of the retriever in use (scales differ). Fails at startup if the
+    file is missing: silently using 0.0 would answer events the base knows nothing about."""
+    path = Path(settings.thresholds_dir) / f"threshold-{'hybrid' if hybrid else 'lexical'}.json"
+    if not path.exists():
+        raise RuntimeError(
+            f"limiar de recusa calibrado nao encontrado: {path} (make eval-calibrate)"
+        )
+    return load_threshold(path)
+
+
 settings = Settings()
+_embedder = build_embedder(settings)
 
 app = create_app(
     AppDeps(
         connect=lambda: psycopg.connect(settings.database_url, connect_timeout=5),
         llm=build_llm(settings),
-        embedder=build_embedder(settings),
+        embedder=_embedder,
+        min_score=refusal_threshold(settings, hybrid=_embedder is not None),
     )
 )

@@ -159,3 +159,15 @@ def test_composition_without_key_or_model_stays_unconfigured():
     assert isinstance(build_llm(Settings(openrouter_api_key="", llm_model="x")), UnconfiguredLLM)
     assert isinstance(build_llm(Settings(openrouter_api_key="k", llm_model="")), UnconfiguredLLM)
     assert isinstance(build_llm(Settings(openrouter_api_key="k", llm_model="x")), FallbackLLM)
+
+
+def test_refusal_threshold_comes_from_the_calibrated_file_and_fails_loudly_without_it(tmp_path):
+    import pytest
+
+    from copilot.main import refusal_threshold
+
+    (tmp_path / "threshold-hybrid.json").write_text('{"min_score": 0.52}', encoding="utf-8")
+    settings = Settings(thresholds_dir=str(tmp_path))
+    assert refusal_threshold(settings, hybrid=True) == 0.52
+    with pytest.raises(RuntimeError, match="limiar de recusa"):
+        refusal_threshold(settings, hybrid=False)

@@ -11,3 +11,4 @@ class Settings(BaseSettings):
     # No default model on purpose: the choice is the operator's (and A/B are fixed at evaluation).
     llm_model: str = ""
     llm_fallback_model: str = ""
+    thresholds_dir: str = "eval"
