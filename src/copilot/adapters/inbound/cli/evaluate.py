@@ -14,6 +14,7 @@ from pathlib import Path
 import psycopg
 
 from copilot.adapters.outbound.fakes.llm import EchoLLM
+from copilot.adapters.outbound.llm.openrouter_llm import OpenRouterLLM
 from copilot.adapters.outbound.postgres.lexical_retriever import LexicalRetriever
 from copilot.application.ports import LLMPort
 from copilot.application.prompting import PROMPT_VERSION
@@ -31,11 +32,15 @@ K = 6
 
 
 def _llm(name: str) -> LLMPort:
+    """`echo` (pipeline only) or `openrouter:<model-id>`; never with fallback (docs/03)."""
     if name == "echo":
         return EchoLLM()
-    raise SystemExit(
-        f"LLM '{name}' indisponivel: so o modo 'echo' (somente encanamento) esta implementado."
-    )
+    if name.startswith("openrouter:"):
+        key = Settings().openrouter_api_key
+        if not key:
+            raise SystemExit("OPENROUTER_API_KEY nao configurada.")
+        return OpenRouterLLM(key, name.removeprefix("openrouter:"))
+    raise SystemExit(f"LLM desconhecido: {name!r} (use 'echo' ou 'openrouter:<modelo>')")
 
 
 def _commit() -> str:
@@ -93,7 +98,8 @@ def main(argv: list[str] | None = None) -> int:
         meta["aviso"] = "LLM de eco: mede apenas recuperacao, recusa e encanamento, nao qualidade"
     title = f"Avaliacao {meta['data']} ({args.llm}, {args.split})"
     args.reports_dir.mkdir(parents=True, exist_ok=True)
-    stem = args.reports_dir / f"{meta['data']}-{args.llm}-{args.split}"
+    safe_llm = args.llm.replace(":", "_").replace("/", "_")
+    stem = args.reports_dir / f"{meta['data']}-{safe_llm}-{args.split}"
     stem.with_suffix(".md").write_text(
         report.render_markdown(title, meta, summary, categories), encoding="utf-8"
     )

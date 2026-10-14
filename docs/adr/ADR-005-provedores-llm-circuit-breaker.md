@@ -49,3 +49,7 @@ Assumo que o breaker é, para este volume, mais demonstração de critério que 
 - O fallback altera o comportamento: a mesma requisição pode ter respostas diferentes dependendo da disponibilidade. Por isso o modelo usado é auditado.
 - Na avaliação, o fallback é desligado, para não misturar modelos numa mesma coluna de resultado.
 - Dependência de um intermediário (OpenRouter) soma uma camada de latência e um ponto de falha; é aceito para o escopo.
+
+## Atualização da implementação (14/10/2026)
+
+Implementado em `adapters/outbound/llm/`: `OpenRouterLLM` (timeout 20 s, 1 retry com backoff para timeout, erro de rede, 429 e 5xx; sem retry em outros 4xx) e `FallbackLLM` com `CircuitBreaker` (3 falhas, 30 s, meia-abertura com uma tentativa), relógio injetável. A porta ficou `complete(system, user) -> LLMResponse(text, model)`; a validação do JSON é feita pelo caso de uso, não por schema no provedor. Sem chave ou sem `LLM_MODEL`, a API responde 503. Verificado só com `httpx.MockTransport`; não foi exercitado contra a API real.

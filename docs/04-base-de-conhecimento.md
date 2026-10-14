@@ -163,10 +163,12 @@ O retriever deve ignorar procedimentos `revogado` (filtro por `status`), e o cen
 
 ## Checklist de qualidade antes de ingerir
 
-- [ ] Prefixo `PO-FICT-`, `ficticio: true` e aviso no topo.
+- [x] Prefixo `PO-FICT-`, `ficticio: true` e aviso no topo.
 - [ ] Sem nomes de empresas reais, subestações reais, sistemas reais ou pessoas.
 - [ ] Sem trechos copiados de norma, manual ou procedimento de terceiros.
-- [ ] Passos são frases completas, citáveis e sem referência a "ver acima".
-- [ ] Valores numéricos são fictícios e identificados como tais.
-- [ ] Ao menos 2 procedimentos com sobreposição parcial e 1 revogado.
+- [x] Passos são frases completas, citáveis e sem referência a "ver acima".
+- [x] Valores numéricos são fictícios e identificados como tais.
+- [x] Ao menos 2 procedimentos com sobreposição parcial e 1 revogado.
 - [ ] Rascunhos assistidos por LLM foram reescritos e estão declarados (ADR-007).
+
+Estado em 14/10/2026: itens marcados foram conferidos por teste ou busca no repositório. Ficam em aberto, de propósito, os que dependem da autora: nomes reais, trechos copiados de terceiros (a conferência de ausência de nomes foi só por busca textual) e a reescrita dos rascunhos.

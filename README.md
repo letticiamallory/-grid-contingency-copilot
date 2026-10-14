@@ -13,7 +13,7 @@ Em uma contingência, o operador precisa de passos de resposta rápidos e rastre
 ## Solução
 
 1. O operador registra um evento de rede.
-2. O sistema recupera trechos de procedimentos relevantes (busca híbrida: vetorial + full-text).
+2. O sistema recupera trechos de procedimentos relevantes (hoje: full-text com preferência pelos procedimentos aplicáveis ao tipo do evento; busca vetorial prevista).
 3. Um LLM propõe passos, cada um com `chunk_id` e trecho literal citado.
 4. O código verifica que cada trecho existe literalmente no procedimento recuperado. Passos sem citação válida são descartados.
 5. Se não há procedimento aplicável, ou nenhum passo sobrevive à verificação, o sistema recusa e informa o motivo.
@@ -41,27 +41,38 @@ flowchart LR
 
 Detalhes em `docs/01-arquitetura.md` e nos ADRs em `docs/adr/`.
 
+## Estado atual
+
+Implementado e testado (141 testes): ingestão, recuperação lexical (full-text do PostgreSQL), geração com verificação de citação e recusa, API, decisão humana com travas no banco, auditoria encadeada e harness de avaliação.
+
+Ainda não feito:
+
+- Recuperação vetorial/híbrida (a coluna `vector(1536)` existe; falta gerar embeddings com uma chave do OpenRouter).
+- Nenhuma chamada a um LLM real foi feita. O adaptador (timeout, 1 retry, circuit breaker, fallback) foi verificado só com transporte simulado.
+- Nenhuma rodada de avaliação com modelos reais. Os procedimentos e os cenários são rascunhos que a autora ainda deve reescrever.
+
 ## Como rodar
 
-Pré-requisitos: Docker, Docker Compose e uma chave do OpenRouter (apenas para uso com modelos reais).
+Pré-requisitos: Python 3.12, [uv](https://docs.astral.sh/uv/), PostgreSQL 16+ com a extensão pgvector (via `docker compose up -d db` ou instalação local) e `make`. Uma chave do OpenRouter só é necessária para modelos reais e embeddings.
 
 ```bash
-git clone <url-do-repositorio>
-cd grid-contingency-copilot
-cp .env.example .env          # preencher OPENROUTER_API_KEY
-docker compose up -d          # API em http://localhost:8000 e Swagger em /docs
-make ingest                   # indexa knowledge_base/ no banco
-make test                     # testes unitários e de integração
-make eval-fake                # avaliação determinística (sem custo)
-make eval                     # avaliação com modelos reais (usa créditos)
+cp .env.example .env          # ajustar DATABASE_URL; OPENROUTER_API_KEY e LLM_MODEL para modelos reais
+uv sync
+make up                       # Postgres com pgvector (ou use um banco local)
+make migrate
+make ingest ARGS=--no-embeddings   # indexa knowledge_base/ (sem chave: apenas busca lexical)
+make test                     # testes unitários e de integração (exigem o banco)
+make eval-calibrate           # calibra o limiar de recusa no split calibration
+make eval-fake                # avaliação com LLM de eco: mede recuperação e recusa, não qualidade
 make audit-verify             # verifica a cadeia de hashes da auditoria
+uv run uvicorn copilot.main:app   # API em http://localhost:8000, Swagger em /docs
 ```
 
-Os comandos acima são o contrato do projeto; as alvos do `Makefile` são implementadas conforme o roadmap (`docs/05-roadmap.md`).
+Sem `OPENROUTER_API_KEY` e `LLM_MODEL`, gerar sugestão responde 503 `llm_unavailable`; o sistema não inventa resposta. `make eval` (modelos reais) ainda não está disponível; o CLI aceita `--llm openrouter:<modelo>` quando houver chave.
 
 ## Resultados da avaliação
 
-Placeholder: preencher após a primeira rodada completa. N = número de cenários; intervalos de confiança por bootstrap.
+Ainda não há rodada com modelos reais; a tabela abaixo está vazia de propósito. N = número de cenários; intervalos de confiança por bootstrap.
 
 | Configuração | Recall@6 | Citação válida | Recusa correta (P / R) | Alucinação | N |
 |---|---|---|---|---|---|
@@ -79,7 +90,10 @@ Os resultados comparam configurações no mesmo conjunto de cenários, escrito p
 - Verificação de citação é literal: não garante que o passo decorre do trecho.
 - Operador identificado por texto, sem autenticação.
 - "Imutável" significa acréscimo apenas via aplicação e adulteração detectável; não protege contra administrador do banco.
-- Conjunto de avaliação pequeno e de autor único.
+- Conjunto de avaliação pequeno e de autor único. Nesta versão os cenários e os procedimentos são rascunhos assistidos por IA e a avaliação com LLM de eco dá resultados próximos de perfeitos por construção; não são evidência de qualidade.
+- A recuperação depende do campo `applies_to` dos procedimentos: um tipo de evento fora do vocabulário da base só é encontrado se o texto dos atributos casar.
+- Uma falha do LLM desfaz a requisição inteira, inclusive o registro de auditoria daquela tentativa.
+- O papel de banco sem `UPDATE/DELETE` na auditoria não foi criado; só os triggers protegem.
 - Não integra com nenhum sistema real e não executa ações.
 
 ## Próximos passos

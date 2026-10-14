@@ -5,38 +5,38 @@ Premissa: 20 h de desenvolvimento no total, 5 h por semana (cerca de 4 semanas).
 ## Versão mínima (20 h)
 
 ### M0 - Fundação (2 h)
-- [ ] Repositório, estrutura de pastas, `pyproject`, `ruff`, `pytest`
-- [ ] `docker-compose.yml` com Postgres + pgvector; migration inicial
-- [ ] `.env.example`, `Makefile` com alvos vazios
-- [ ] CI com lint + testes (ainda trivial)
-- [ ] LICENSE (MIT), aviso de dados sintéticos
+- [x] Repositório, estrutura de pastas, `pyproject`, `ruff`, `pytest`
+- [x] `docker-compose.yml` com Postgres + pgvector; migration inicial
+- [x] `.env.example`, `Makefile` com alvos vazios
+- [x] CI com lint + testes (ainda trivial)
+- [x] LICENSE (MIT), aviso de dados sintéticos
 
 ### M1 - Base de conhecimento e ingestão (4 h)
 - [ ] 10 procedimentos fictícios (3 h, ver `04-base-de-conhecimento.md`)
-- [ ] Parser de front-matter e divisão em chunks
-- [ ] Teste de CI para marcadores de conteúdo fictício
+- [x] Parser de front-matter e divisão em chunks
+- [x] Teste de CI para marcadores de conteúdo fictício
 - [ ] Ingestão com embeddings e `tsvector` (1 h)
 - [ ] Decisão do modelo de embedding (OpenRouter ou local), registrada no ADR-002
 
 ### M2 - Núcleo do fluxo (4 h)
-- [ ] Modelos do domínio, `citation.py` com testes de paráfrase, acento e espaço
-- [ ] Portas e `FakeLLM`, repositórios em memória
-- [ ] Caso de uso `GenerateSuggestion` com as três causas de recusa
+- [x] Modelos do domínio, `citation.py` com testes de paráfrase, acento e espaço
+- [x] Portas e `FakeLLM`, repositórios em memória
+- [x] Caso de uso `GenerateSuggestion` com as três causas de recusa
 - [ ] Retriever híbrido (RRF) e filtro de procedimentos revogados
-- [ ] Adaptador OpenRouter básico (timeout e 1 retry), prompt v1 com saída estruturada
+- [x] Adaptador OpenRouter (timeout, 1 retry, breaker, fallback) e prompt v1; só testado com transporte simulado
 
 ### M3 - API, decisão e auditoria (3 h)
-- [ ] Rotas de eventos, sugestões, decisão e auditoria
-- [ ] `RecordDecision` com regra de estados e `CHECK` no banco
-- [ ] Auditoria encadeada com trigger bloqueando `UPDATE/DELETE`; `audit-verify`
-- [ ] Testes de integração (Postgres real) e teste de contrato do OpenAPI
+- [x] Rotas de eventos, sugestões, decisão e auditoria
+- [x] `RecordDecision` com regra de estados e `CHECK` no banco
+- [x] Auditoria encadeada com trigger bloqueando `UPDATE/DELETE`; `audit-verify`
+- [x] Testes de integração (Postgres real) e teste de contrato do OpenAPI
 
 ### M4 - Avaliação (5 h)
-- [ ] Formato YAML e carregador; 20 a 30 categorias, 60 cenários no mínimo (2 h)
-- [ ] Cálculo das métricas e bootstrap
-- [ ] Calibração do limiar no `calibration`
+- [x] Formato YAML e carregador; 24 categorias, 73 cenários (rascunhos; revisão da autora pendente)
+- [x] Cálculo das métricas e bootstrap
+- [x] Calibração do limiar no `calibration`
 - [ ] Rodada real com 2 modelos x com/sem RAG, mais baseline lexical
-- [ ] Relatório em `eval/reports/` e `make eval-fake` na CI
+- [x] Relatório em `eval/reports/` e `make eval-fake` na CI
 
 ### M5 - README e publicação (2 h)
 - [ ] README com resultados reais no lugar do placeholder
@@ -63,3 +63,7 @@ Total: 20 h, sem folga. Trate a primeira semana de M0 e M1 como termômetro: se 
 ## Observação sobre consistência
 
 O escopo (RNF-03) e o ADR-005 listam circuit breaker e fallback como parte do desenho, mas o roadmap os coloca fora das 20 h. Essa diferença é intencional e precisa de uma decisão sua: ou mover os 2 h para dentro do mínimo (e cortar cenários), ou ajustar RNF-03 para refletir apenas timeout e retry no mínimo.
+
+## Estado em 14/10/2026
+
+Concluído sem chave do OpenRouter: M0, M2 (exceto retriever híbrido e verificação do adaptador contra a API real), M3, parte do M4 (cenários, métricas, calibração, `eval-fake`) e o circuit breaker com fallback (antes um extra). Pendente: embeddings e retriever híbrido, prompt v1 validado com modelo real, rodada real da avaliação, 30% dos cenários escritos antes dos procedimentos (ADR-008), reescrita dos procedimentos pela autora, M5.

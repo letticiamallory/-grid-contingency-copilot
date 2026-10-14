@@ -8,3 +8,6 @@ class Settings(BaseSettings):
     migrations_dir: str = "migrations"
     openrouter_api_key: str = ""
     embedding_model: str = "openai/text-embedding-3-small"
+    # No default model on purpose: the choice is the operator's (and A/B are fixed at evaluation).
+    llm_model: str = ""
+    llm_fallback_model: str = ""

@@ -49,3 +49,10 @@ A recusa ocorre em três situações, cada uma com código de motivo:
 - A verificação é um módulo puro do domínio (`citation.py`), fácil de testar com casos de paráfrase, espaços e acentos.
 - O limiar de recusa troca recusa indevida por alucinação; a curva dessa troca é um resultado da avaliação.
 - Procedimentos revisados mudam o texto: a citação guarda `procedure.version` e `content_hash` para a auditoria apontar o texto exato.
+
+## Atualização da implementação (14/10/2026)
+
+- Hoje só a recuperação lexical existe (`websearch_to_tsquery` com configuração `portuguese`, termos unidos por OR). O tipo do evento entra pelo campo `applies_to` do procedimento: candidatos incluem os procedimentos aplicáveis ao tipo, com bônus fixo de 1,0 sobre o `ts_rank`. A parte vetorial e o RRF seguem pendentes (dependem de embeddings reais).
+- O identificador do elemento (ex.: `SE-FICT-01`) fica fora da consulta de texto: o token `fict` casava por radical com "fictícia" em quase todos os trechos e impedia a recusa.
+- O limiar de recusa vem de `eval/threshold.json`, calibrado sobre o split `calibration` (ponto médio da faixa ótima). Com cenários e base escritos pela mesma pessoa, esse valor é provisório.
+- Ingestão: uma nova versão de procedimento exige novo `code`; reingerir o mesmo `code` com conteúdo diferente é recusado.
