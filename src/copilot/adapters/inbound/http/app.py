@@ -2,12 +2,13 @@ import uuid
 from collections.abc import Callable
 from contextlib import AbstractContextManager
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import psycopg
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from copilot.adapters.inbound.http import schemas
 from copilot.adapters.outbound.postgres.audit import PostgresAudit
@@ -27,6 +28,8 @@ from copilot.application.use_cases.events_and_decisions import (
 from copilot.application.use_cases.generate_suggestion import GenerateSuggestion
 from copilot.domain.errors import DomainError
 from copilot.domain.models import Suggestion
+
+_STATIC = Path(__file__).parent / "static"
 
 _STATUS = {
     "event_not_found": 404,
@@ -106,6 +109,10 @@ def create_app(deps: AppDeps) -> FastAPI:
     def invalid_payload(_: Request, exc: RequestValidationError) -> JSONResponse:
         problems = [{"loc": [str(p) for p in e["loc"]], "msg": e["msg"]} for e in exc.errors()]
         return _error(400, "invalid_payload", "payload ou parâmetro inválido", {"errors": problems})
+
+    @app.get("/", include_in_schema=False)
+    def screen() -> FileResponse:
+        return FileResponse(_STATIC / "index.html", media_type="text/html; charset=utf-8")
 
     @app.get("/health")
     def health() -> dict[str, str]:
