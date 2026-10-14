@@ -7,3 +7,11 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      python:
+        patterns: ["*"]
