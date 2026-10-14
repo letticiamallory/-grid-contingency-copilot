@@ -54,7 +54,6 @@
   .page { padding: 32px 36px 56px; max-width: 1240px; margin: 0 auto; }
   @media (max-width: 700px) { .page { padding: 24px 16px 40px; } }
   h1 { margin: 0; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -.2px; }
-  .lead { margin: 4px 0 24px; color: var(--texto-2); }
   .stack { display: grid; gap: 24px; min-width: 0; }
   .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 24px; align-items: start; }
   .card { background: var(--fundo-superficie); border: 1px solid var(--borda); border-radius: 8px; padding: 24px;
@@ -165,7 +164,6 @@
 
   <main class="page">
     <h1>Nova ocorrência</h1>
-    <p class="lead">Registre o evento. O copiloto sugere passos só a partir dos procedimentos e mostra o trecho que sustenta cada um.</p>
 
     <div class="stack">
       <section class="card" id="c-event" aria-labelledby="h-event">
@@ -188,7 +186,6 @@
           </datalist>
           <div class="actions">
             <button class="btn primary block" id="go" type="submit">Registrar e gerar sugestão</button>
-            <span class="hint" style="margin:0">Se nenhum procedimento se aplicar, o copiloto recusa e diz o motivo.</span>
           </div>
         </form>
         <div id="formMsg"></div>
