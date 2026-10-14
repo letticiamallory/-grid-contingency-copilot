@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+
+.env
+.env.*
+!.env.example
+
+# cache de respostas da avaliacao (pode conter saidas de modelos)
+eval/.cache/
+
+.claude/
